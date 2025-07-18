@@ -9,11 +9,12 @@ import { useFeatureRequestStore } from '@/stores/featureRequestStore'
 
 const store = useFeatureRequestStore()
 
-function submit() {
+async function submit() {
   store.startProcessing()
 
   if (store.validate()) {
     console.log('success')
+    await store.submitFeatureRequest()
   }
 
   store.endProcessing()
@@ -89,6 +90,10 @@ function submit() {
         <InputError :message="store.formError.description" />
       </div>
 
+      <InputError
+        :message="store.formError.server"
+        class="h-10 bg-red-100 px-3 content-center rounded font-normal"
+      />
       <!-- Submit Button -->
       <div class="my-6 flex items-center justify-start">
         <Button class="w-full" :disabled="store.processing" @click="submit">

@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "types": ["vite/client"],
     "paths": {
       "@/*": ["./src/*"]
     }
