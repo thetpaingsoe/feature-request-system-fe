@@ -39,7 +39,7 @@ async function submit() {
     <div class="space-y-6 flex-1/2 px-4 py-8 md:p-8">
       <!-- Header -->
       <div class="grid gap-2">
-        <Label class="text-2xl">Feature Request Form </Label>
+        <Label class="text-2xl">Feature Request Form</Label>
         <Label class="text-gray-500 text-sm/6 md:font-normal"
           >Submit your innovative ideas and suggestions to help us improve.
         </Label>
