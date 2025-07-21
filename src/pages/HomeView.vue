@@ -22,9 +22,7 @@ const store = useFeatureRequestStore()
 
 const isDialogOpen = ref(false);
 
-const closeModal = () => {
-    // form.clearErrors();
-    // form.reset();
+const closeModal = () => {    
     isDialogOpen.value = false;
 };
 
@@ -32,7 +30,7 @@ async function submit() {
   store.startProcessing()
 
   if (store.validate()) {
-    console.log('success')
+    // console.log('success')
     const data = await store.submitFeatureRequest()
     if(data != null) {
       isDialogOpen.value = true;
@@ -126,7 +124,7 @@ async function submit() {
     </div>
   </div>
 
-  <!-- Delete Confirmation Dialog -->
+  <!-- Success Dialog -->
   <Dialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
     <DialogContent>
         <form class="space-y-6" @submit="">
@@ -140,7 +138,7 @@ async function submit() {
 
             <DialogFooter class="gap-2">
                 <DialogClose as-child>
-                    <Button variant="secondary" @click="closeModal"> OK </Button>
+                    <Button variant="secondary" id="dialog-ok-button" @click="closeModal"> OK </Button>
                 </DialogClose>                
             </DialogFooter>
         </form>
