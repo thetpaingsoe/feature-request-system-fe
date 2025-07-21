@@ -3,7 +3,7 @@
 This is the frontend side of the feature request system.  
 
 Here is the related project  
-[Main Project](https://github.com/thetpaingsoe/feature-request-system)
+[Main Project](https://github.com/thetpaingsoe/feature-request-system)  
 [Backend Project](https://github.com/thetpaingsoe/feature-request-system-be)
 
 ## Project Setup
