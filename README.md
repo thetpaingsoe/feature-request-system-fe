@@ -1,6 +1,10 @@
-# ui-component-vue
+# Feature Request System Frontend Project
 
-This is the demo project for the form UI/UX with validation input in Vue.js and TailwindCss.
+This is the frontend side of the feature request system.  
+
+Here is the related project  
+[Main Project](https://github.com/thetpaingsoe/feature-request-system)
+[Backend Project](https://github.com/thetpaingsoe/feature-request-system-be)
 
 ## Project Setup
 
