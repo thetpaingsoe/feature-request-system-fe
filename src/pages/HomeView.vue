@@ -6,15 +6,37 @@ import Label from '@/components/ui/label/Label.vue'
 import TextArea from '@/components/ui/textarea/TextArea.vue'
 import { LoaderCircle } from 'lucide-vue-next'
 import { useFeatureRequestStore } from '@/stores/featureRequestStore'
+import { ref } from 'vue'
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 
 const store = useFeatureRequestStore()
+
+const isDialogOpen = ref(false);
+
+const closeModal = () => {
+    // form.clearErrors();
+    // form.reset();
+    isDialogOpen.value = false;
+};
 
 async function submit() {
   store.startProcessing()
 
   if (store.validate()) {
     console.log('success')
-    await store.submitFeatureRequest()
+    const data = await store.submitFeatureRequest()
+    if(data != null) {
+      isDialogOpen.value = true;
+    }
   }
 
   store.endProcessing()
@@ -103,4 +125,25 @@ async function submit() {
       </div>
     </div>
   </div>
+
+  <!-- Delete Confirmation Dialog -->
+  <Dialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
+    <DialogContent>
+        <form class="space-y-6" @submit="">
+            <DialogHeader class="space-y-3">
+                <DialogTitle class=" text-lg/8">Successfully Sent!</DialogTitle>
+                <DialogDescription>
+                    Your request has been successfully sent to the company. Thanks for your valuable time.
+                </DialogDescription>
+            </DialogHeader>
+
+
+            <DialogFooter class="gap-2">
+                <DialogClose as-child>
+                    <Button variant="secondary" @click="closeModal"> OK </Button>
+                </DialogClose>                
+            </DialogFooter>
+        </form>
+    </DialogContent>
+</Dialog>
 </template>
