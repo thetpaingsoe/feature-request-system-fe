@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DropdownOptionType } from '@/types/SubmissionTypes'
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
@@ -42,8 +43,8 @@ const touched = ref(false)
 
 // Computed property to display the text of the selected option
 const selectedOptionText = computed(() => {
-  const selected = props.options.find((option) => option.value === props.modelValue)
-  return selected ? selected.text : ''
+  const selected = props.options.find((option) => option.id === props.modelValue)
+  return selected ? selected.value : ''
 })
 
 // Computed property for validation state
@@ -177,14 +178,14 @@ watch(
       >
         <li
           v-for="option in options"
-          :key="option.text"
-          @click="selectOption(option.value)"
+          :key="option.value"
+          @click="selectOption(option.id)"
           class="px-4 py-2 cursor-pointer hover:bg-primary text-white"
-          :class="{ 'bg-primary text-white': modelValue === option.value }"
+          :class="{ 'bg-primary text-white': modelValue === option.id }"
           role="option"
-          :aria-selected="modelValue === option.value"
+          :aria-selected="modelValue === option.id"
         >
-          {{ option.text }}
+          {{ option.value }}
         </li>
       </ul>
     </div>

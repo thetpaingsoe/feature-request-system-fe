@@ -4,14 +4,14 @@ import CompanyDetailForm from '@/components/forms/CompanyDetailForm.vue'
 import BeneficialOwner from '@/components/forms/BeneficialOwner.vue'
 import Director from '@/components/forms/Director.vue'
 import SharedHolders from '@/components/forms/SharedHolders.vue'
-import { type FormDataStructure } from '@/types/SubmissionTypes'
+
 const props = defineProps({
   currentSection: {
     type : Number,
     default : 0
   },
   modelValue: {
-    type: Object,
+    type: Object || [],
     required: true
   },
 })

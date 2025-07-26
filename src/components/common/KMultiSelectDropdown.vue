@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { DropdownOptionType } from '@/types/SubmissionTypes'
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
@@ -42,8 +43,8 @@ const touched = ref(false)
 
 const selectedOptionText = computed(() => {
   const selectedTexts = props.options
-    .filter((option) => props.modelValue.includes(option.value))
-    .map((option) => option.text)
+    .filter((option) => props.modelValue.includes(option.id))
+    .map((option) => option.value)
   return selectedTexts.join(', ')
 })
 
@@ -167,17 +168,17 @@ watch(
       >
         <li
           v-for="option in options"
-          :key="option.text"
-          @click="selectOption(option.value)"
+          :key="option.value"
+          @click="selectOption(option.id)"
           class="flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-primary text-white"
-          :class="{ 'bg-primary text-white': modelValue.includes(option.value) }"
+          :class="{ 'bg-primary text-white': modelValue.includes(option.id) }"
           role="option"
-          :aria-selected="modelValue.includes(option.value)"
+          :aria-selected="modelValue.includes(option.id)"
         >
-          {{ option.text }}
+          {{ option.value }}
           <input
             type="checkbox"
-            :checked="modelValue.includes(option.value)"
+            :checked="modelValue.includes(option.id)"
             class="form-checkbox text-primary"
           />
         </li>

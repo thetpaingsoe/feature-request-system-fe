@@ -3,23 +3,29 @@ import Actions from '@/components/Actions.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
-import { FormDataStructure } from '@/types/SubmissionTypes'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-const sections = ['Company Details', 'Shareholders', 'Beneficial Owner', 'Director']
+const sections = ref<string[]>(['Company Details', 'Shareholders', 'Beneficial Owner', 'Director']);
 const currentSection = ref(0)
 
 const sectionFormRef = ref()
 
-const formData = ref({
-  company_detail: {},
-  shareholders: {},
-  beneficial_owners: {},
-  directors: {},
-})
+const formData = ref(
+  JSON.parse(localStorage.getItem('formData') || JSON.stringify({
+    company_detail: {},
+    shareholders: [],
+    beneficial_owners: [],
+    directors: [],
+  }))
+)
+
+watch(formData, (newVal) => {
+  localStorage.setItem('formData', JSON.stringify(newVal))
+}, { deep: true })
 
 function handleSectionChange(index : number) {
-  if (index < 0 || index >= sections.length) return false
+  
+  if (index < 0 || index >= sections.value.length) return false
 
   if (index < currentSection.value) {
     currentSection.value = index

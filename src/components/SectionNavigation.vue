@@ -9,17 +9,22 @@ const props = defineProps<Props>();
 
 // defineProps({
 //   sections: {
-//     type : []
+//     type : [] as String[], // Use the JavaScript 'Array' constructor
+//     required: true, // Example: make it required
+//     default: () => []
 //   },
 //   currentSection: {
-//     type: Number
+//     type : Number,
+//     default : 0
 //   },
 // })
+
 
 defineEmits(['navigate'])
 </script>
 <template>
-  <div class="flex gap-6 mt-12 items-center">
+  <div class="flex gap-6 mt-12 items-center text-white">
+    
     <div
       v-for="(section, index) in sections"
       :key="index"

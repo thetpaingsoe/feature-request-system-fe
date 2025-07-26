@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import KDropdown from '@/components/common/KDropdown.vue'
 import KMultiSelectDropdown from '@/components/common/KMultiSelectDropdown.vue'
 import KNumberInput from '@/components/common/KNumberInput.vue'
 import KRadio from '@/components/common/KRadio.vue'
 import KInput from '@/components/common/KInput.vue'
+import type { DropdownOptionType, Submission } from '@/types/SubmissionTypes';
+import { useCountryStore } from '@/stores/countryStore'
+import { useCompanyDesignationStore } from '@/stores/companyDesignationStore'
+import { userShareValueStore } from '@/stores/shareValuesStore'
+import { ShareValue } from '@/types/ShareValueTypes'
 
 // Receive the v-model from parent
-const modelValue = defineModel<CompanyDetailFormData>({
+const modelValue = defineModel<Submission>({
     required: true, 
 })
 
+const countryStore = useCountryStore();
+const designationStore = useCompanyDesignationStore();
+const shaerValueStore = userShareValueStore();
+
+onMounted(() => {
+  countryStore.fetch();
+  designationStore.fetch();
+  shaerValueStore.fetch();
+});
 // Full Name
 const fullNameValidateionState = ref({})
 const fullNameValidationRule = {
@@ -71,7 +85,7 @@ const altCompanyNameValidationRule = {
     if (!value.trim()) {
       return false // Empty or whitespace only
     }
-    if (value.toLowerCase() === modelValue.value?.companyName.toLowerCase()) {
+    if (value.toLowerCase() === modelValue.value?.company_name.toLowerCase()) {
       return false
     }
     return true
@@ -81,14 +95,12 @@ const altCompanyNameValidationRule = {
 
 // Company Designation
 const designationValidateionState = ref({})
-const designationOptions = ref<DropdownOptionType[]>([
-  { value: null, text: 'Select the option that you prefer' },
-  { value: 'CEO', text: 'Chief Executive Officer' },
-  { value: 'COO', text: 'Chief Operating Officer' },
-  { value: 'CFO', text: 'Chief Financial Officer' },
-  { value: 'CTO', text: 'Chief Technology Officer' },
-  { value: 'CMO', text: 'Chief Marketing Officer' },
-])
+const designationOptions = computed(() =>
+  designationStore.data.map((designation: { id: number; name: string; }) => ({
+    id: designation.id,
+    value: designation.name,    
+  }))
+)
 const designationValidationRule = {
   validate: (value : string) => {
     return value !== null && value !== ''
@@ -98,15 +110,13 @@ const designationValidationRule = {
 
 // Jurisdiction of operation
 const operationCountryValidateionState = ref({})
-const operationCountryOptions = ref([
-  { value: null, text: 'Select the country where you are located' },
-  { value: 'SG', text: 'Singapore' },
-  { value: 'US', text: 'United States' },
-  { value: 'CA', text: 'Canada' },
-  { value: 'GB', text: 'United Kingdom' },
-  { value: 'AU', text: 'Australia' },
-  { value: 'TH', text: 'Thailand' },
-])
+const operationCountryOptions = computed(() =>
+  countryStore.data.map((country: { id: number; name: string; code: string }) => ({
+    id: country.id,
+    value: country.name,
+    code: country.code,
+  }))
+)
 const operationCountryValidationRule = {
   validate: (value : string) => {
     return value !== null && value !== ''
@@ -116,14 +126,13 @@ const operationCountryValidationRule = {
 
 // Target Jurisdictions
 const targetCountryValidateionState = ref({})
-const targetCountryOptions = [
-  { value: 'SG', text: 'Singapore' },
-  { value: 'US', text: 'United States' },
-  { value: 'CA', text: 'Canada' },
-  { value: 'GB', text: 'United Kingdom' },
-  { value: 'AU', text: 'Australia' },
-  { value: 'TH', text: 'Thailand' },
-]
+const targetCountryOptions = computed(() =>
+  countryStore.data.map((country: { id: number; name: string; code: string }) => ({
+    id: country.id,
+    value: country.name,
+    code: country.code,
+  }))
+)
 const targetCountryValidation = {
   validate: (val : Array<string>) => val.length >= 1 && val.length <= 3,
   message: 'Please select 1 to 3 target jurisdictions',
@@ -152,7 +161,7 @@ const areAllSharedIssuedValidation = {
     console.log(val)
     if (val === true) {
       if (modelValue.value) {
-        modelValue.value.issuedShares = modelValue.value.numOfShares
+        modelValue.value.number_of_issued_shares = modelValue.value.number_of_shares
       }
       issuedSharesValidateionState.value = {
         status: true,
@@ -174,29 +183,29 @@ const issuedSharesValidationRule = {
     if (value < 1) {
       return false // Specific disallowed name
     }
-    if (modelValue.value) {
-      if (value > Number(modelValue.value.numOfShares | 0)) {
+    // if (modelValue.value) {
+      if (value > Number(modelValue.value.number_of_shares | 0)) {
         return false
       }
       if (
-        // (modelValue.value.areAllSharedIssued != null) &
-        //   (modelValue.value.areAllSharedIssued != true) &&
-        value == Number(modelValue.value.numOfShares | 0)
+        (modelValue.value.are_all_shares_issued != null) &&
+          (modelValue.value.are_all_shares_issued != true) &&
+        value == Number(modelValue.value.number_of_shares | 0)
       ) {
         return false
       }
     
 
       if (
-        // (modelValue.value.areAllSharedIssued != null) &
-        //   (modelValue.value.areAllSharedIssued == true) &&
-        value != Number(modelValue.value.numOfShares | 0)
+        (modelValue.value.are_all_shares_issued != null) &&
+          (modelValue.value.are_all_shares_issued == true) &&
+        value != Number(modelValue.value.number_of_shares | 0)
       ) {
         return false
       }
-    }else {
-      return false
-    }
+    // }else {
+    //   return false
+    // }
 
     return true
   },
@@ -205,15 +214,15 @@ const issuedSharesValidationRule = {
 
 // Value Per Shares
 const valuePerSharesValidateionState = ref({})
-const valuePerSharesOptions = ref<DropdownOptionType[]>([
-  { value: null, text: 'Select how much each share is worth' },
-  { value: 100, text: '100 USD' },
-  { value: 200, text: '200 USD' },
-  { value: 300, text: '300 USD' },
-  { value: 400, text: '400 USD' },
-  { value: 500, text: '500 USD' },
-  { value: 600, text: '600 USD' },
-]) 
+const valuePerSharesOptions = computed(() =>
+  shaerValueStore.data.map((shareValue: ShareValue) => {
+    const { id, currency, amount } = shareValue; 
+    return {
+      id: id,
+      value: `${currency} ${amount}`
+    };
+  })
+)
 const valuePerSharesValidationRule = {
   validate: (value : string) => {
     return value !== null && value !== ''
@@ -222,8 +231,9 @@ const valuePerSharesValidationRule = {
 }
 
 function validate() {
+  
   var status = true
-  if (!modelValue.value.fullName) {
+  if (!modelValue.value.full_name) {
     fullNameValidateionState.value = {
       status: true,
       message: '',
@@ -239,7 +249,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.companyName) {
+  if (!modelValue.value.company_name) {
     companyNameValidateionState.value = {
       status: true,
       message: '',
@@ -247,7 +257,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.selectedDesignation) {
+  if (!modelValue.value.company_designation_id) {
     designationValidateionState.value = {
       status: true,
       message: '',
@@ -255,7 +265,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.selectedOperationCountry) {
+  if (!modelValue.value.jurisdiction_of_operation_id) {
     operationCountryValidateionState.value = {
       status: true,
       message: '',
@@ -263,7 +273,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.altCompanyName) {
+  if (!modelValue.value.alternative_company_name) {
     altCompanyNameValidateionState.value = {
       status: true,
       message: '',
@@ -271,7 +281,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.selectedTargetCountry) {
+  if (!modelValue.value.target_jurisdictions) {
     targetCountryValidateionState.value = {
       status: true,
       message: '',
@@ -279,7 +289,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.numOfShares) {
+  if (!modelValue.value.number_of_shares) {
     numOfSharesValidateionState.value = {
       status: true,
       message: '',
@@ -287,7 +297,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.areAllSharedIssued) {
+  if (!modelValue.value.are_all_shares_issued) {
     areAllSharedIssuedValidateionState.value = {
       status: true,
       message: '',
@@ -295,7 +305,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.issuedShares) {
+  if (!modelValue.value.number_of_issued_shares) {
     issuedSharesValidateionState.value = {
       status: true,
       message: '',
@@ -303,7 +313,7 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.selectedValuePerShares) {
+  if (!modelValue.value.share_value_id) {
     valuePerSharesValidateionState.value = {
       status: true,
       message: '',
@@ -320,6 +330,7 @@ defineExpose({ validate })
 </script>
 
 <template>
+  
   <div class="mt-8 font-bold text-white">Point of contact</div>
   <div class="h-0.5 bg-primary-light ms-2"></div>
   <div class="flex flex-row mt-8">
@@ -334,7 +345,7 @@ defineExpose({ validate })
         label="Full Name"
         type="text"
         placeholder="Enter full name"
-        v-model="modelValue.fullName"
+        v-model="modelValue.full_name"
         :validation-rule="fullNameValidationRule"
         :validation-state="fullNameValidateionState"
       />
@@ -367,7 +378,7 @@ defineExpose({ validate })
         label="Company Name"
         type="text"
         placeholder="The name you want your company to have"
-        v-model="modelValue.companyName"
+        v-model="modelValue.company_name"
         :validation-rule="companyNameValidationRule"
         :validation-state="companyNameValidateionState"
       />
@@ -377,7 +388,7 @@ defineExpose({ validate })
         label="Alternative company name"
         type="text"
         placeholder="The name to use if the first name is not available"
-        v-model="modelValue.altCompanyName"
+        v-model="modelValue.alternative_company_name"
         :validation-rule="altCompanyNameValidationRule"
         :validation-state="altCompanyNameValidateionState"
         class="mt-4"
@@ -388,7 +399,7 @@ defineExpose({ validate })
         cid="company-designation"
         label="Company designation"
         placeholder="Select the option that you prefer"
-        v-model="modelValue.selectedDesignation"
+        v-model="modelValue.company_designation_id"
         :options="designationOptions"
         :validation-rule="designationValidationRule"
         :validation-state="designationValidateionState"
@@ -413,18 +424,19 @@ defineExpose({ validate })
         cid="operation-country"
         label="Jurisdiction of operation"
         placeholder="Select the country where you are located"
-        v-model="modelValue.selectedOperationCountry"
-        :options="operationCountryOptions"
+        v-model="modelValue.jurisdiction_of_operation_id"
+        :options= "operationCountryOptions"
         :validation-rule="operationCountryValidationRule"
         :validation-state="operationCountryValidateionState"
         class="mt-4"
       />
+      <!-- //"operationCountryOptions" -->
 
       <KMultiSelectDropdown
         id="target-country"
         cid="target-country"
         label="Target Jurisdictions"
-        v-model="modelValue.selectedTargetCountry"
+        v-model="modelValue.target_jurisdictions"
         :options="targetCountryOptions"
         :validation-rule="targetCountryValidation"
         :validation-state="targetCountryValidateionState"
@@ -452,7 +464,7 @@ defineExpose({ validate })
         label="Number of Shares"
         type="text"
         placeholder="Select how many shares you wish to have"
-        v-model="modelValue.numOfShares"
+        v-model="modelValue.number_of_shares"
         :validation-rule="numOfSharesValidationRule"
         :validation-state="numOfSharesValidateionState"
         class="mt-4"
@@ -461,7 +473,7 @@ defineExpose({ validate })
       <KRadio
         id="are-all-shared-issued"
         label="Are all shares issued?"
-        v-model="modelValue.areAllSharedIssued"
+        v-model="modelValue.are_all_shares_issued"
         :validation-rule="areAllSharedIssuedValidation"
         :validation-state="areAllSharedIssuedValidateionState"
         class="mt-4"
@@ -473,11 +485,11 @@ defineExpose({ validate })
         label="Number of issued shares"
         type="text"
         placeholder="Write how many shares you wish to issue on day 1"
-        v-model="modelValue.issuedShares"
+        v-model="modelValue.number_of_issued_shares"
         :validation-rule="issuedSharesValidationRule"
         :validation-state="issuedSharesValidateionState"
         class="mt-4"
-        :disabled="modelValue.areAllSharedIssued"
+        v-if="!modelValue.are_all_shares_issued"
       />
 
       <KDropdown
@@ -485,7 +497,7 @@ defineExpose({ validate })
         cid="value-per-shares"
         label="Value per shares"
         placeholder="Write how many shares you wish to issue on day 1"
-        v-model="modelValue.selectedValuePerShares"
+        v-model="modelValue.share_value_id"
         :options="valuePerSharesOptions"
         :validation-rule="valuePerSharesValidationRule"
         :validation-state="valuePerSharesValidateionState"
