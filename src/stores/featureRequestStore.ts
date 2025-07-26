@@ -86,7 +86,7 @@ export const useFeatureRequestStore = defineStore('feature-request', {
         this.resetForm()
 
         return response.data
-      } catch (err) {
+      } catch (err : any) {
         this.formError.server = err.response?.data?.message || err.message
       } finally {
         this.processing = false
