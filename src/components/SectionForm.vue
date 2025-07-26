@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, PropType, ref } from 'vue'
 import CompanyDetailForm from '@/components/forms/CompanyDetailForm.vue'
 import BeneficialOwner from '@/components/forms/BeneficialOwner.vue'
 import Director from '@/components/forms/Director.vue'
 import SharedHolders from '@/components/forms/SharedHolders.vue'
-
+import { type FormDataStructure } from '@/types/SubmissionTypes'
 const props = defineProps({
   currentSection: {
     type : Number,
     default : 0
   },
   modelValue: {
-    type : Object,
-    required : true
+    type: Object,
+    required: true
   },
 })
 

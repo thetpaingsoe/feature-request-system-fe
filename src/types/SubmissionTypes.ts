@@ -1,9 +1,9 @@
-interface DropdownOptionType {
+export interface DropdownOptionType {
     value: string | null | number;
     text: string;    
 };
 
-interface CompanyDetailFormData {
+export interface CompanyDetailFormData {
   fullName: string; 
   email : string;
   selectedOperationCountry : string;
@@ -19,7 +19,7 @@ interface CompanyDetailFormData {
   selectedValuePerShares: number;
 }
 
-interface FormDataStructure {
+export interface FormDataStructure {
   company_detail: CompanyDetailFormData;
   shareholders: any; 
   beneficial_owners: any;

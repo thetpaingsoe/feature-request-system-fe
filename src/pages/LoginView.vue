@@ -31,7 +31,12 @@ const closeModal = () => {
 };
 
 async function submit() {
-    store.submit(router)
+    try {
+        await store.login();
+        store.goTo(router);
+    } catch (err) {
+        store.formError.server = 'Invalid email or password';
+    }
 //   store.startProcessing()
 
 //   if (store.validate()) {
@@ -87,7 +92,7 @@ async function submit() {
 
         <InputError
             :message="store.formError.server"
-            class="h-10 bg-red-100 px-3 content-center rounded font-normal"
+            class="mt-4 h-10 bg-red-100 px-3 content-center rounded font-normal"
         />
       
         <!-- Submit Button -->

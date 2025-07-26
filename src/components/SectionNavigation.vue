@@ -1,8 +1,20 @@
-<script setup>
-defineProps({
-  sections: Array,
-  currentSection: Number,
-})
+<script setup lang="ts">
+
+interface Props {
+  sections: string[]; // Assuming sections is an array of strings (e.g., section titles)
+  currentSection: number;
+}
+
+const props = defineProps<Props>();
+
+// defineProps({
+//   sections: {
+//     type : []
+//   },
+//   currentSection: {
+//     type: Number
+//   },
+// })
 
 defineEmits(['navigate'])
 </script>

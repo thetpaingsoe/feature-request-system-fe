@@ -3,6 +3,7 @@ import Actions from '@/components/Actions.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
+import { FormDataStructure } from '@/types/SubmissionTypes'
 import { ref } from 'vue'
 
 const sections = ['Company Details', 'Shareholders', 'Beneficial Owner', 'Director']
@@ -10,11 +11,8 @@ const currentSection = ref(0)
 
 const sectionFormRef = ref()
 
-const formData = ref<FormDataStructure>({
-  company_detail: {
-    // fullName: 'Jeff',
-    // selectedDesignation: 'CEO',
-  },
+const formData = ref({
+  company_detail: {},
   shareholders: {},
   beneficial_owners: {},
   directors: {},
