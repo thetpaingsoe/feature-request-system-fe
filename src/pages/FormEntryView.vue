@@ -21,7 +21,8 @@ const submissionStore = useSubmissionStore();
 const sectionFormRef = ref()
 
 function handleItemLoadError() {
-  router.push({ name: "dashboard" });
+  submissionStore.resetDialog();
+  router.push({ name: "dashboard" });  
 }
 async function initData() {
   if(props.id) {
@@ -84,13 +85,34 @@ function handleSectionChange(index : number) {
   }
 }
 
+function redirectDashboard() {
+  submissionStore.resetDialog();
+  router.push({name : 'dashboard'});
+}
+
 async function handleSubmit() {
   if (sectionFormRef?.value?.validate()) {
-    const data = await submissionStore.postSubmission();
-    if(data != null) {
-      localStorage.removeItem('formData'); 
-      localStorage.removeItem('currentSection');
-      router.push({ name: "dashboard" });
+
+    if(props.id) {
+      const data = await submissionStore.putSubmission(props.id);
+      console.log(data);
+      submissionStore.showDialog(
+        "Successfully Update!",
+        "Your submission has been successfully updated.",
+        redirectDashboard
+      );
+    }else {
+      // create
+      const data = await submissionStore.postSubmission();
+      if(data != null) {
+        localStorage.removeItem('formData'); 
+        localStorage.removeItem('currentSection');
+        submissionStore.showDialog(
+          "Successfully Created!",
+          "Your submission has been successfully created.",
+          redirectDashboard
+        );
+      }
     }
   }
 }

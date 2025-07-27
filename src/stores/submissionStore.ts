@@ -47,6 +47,15 @@ export const useSubmissionStore = defineStore('submissions-store', {
                 console.log(err);
             }
         },
+        showDialog(title : string, message : string, action : any = () => {}, button : string = "OK"){
+            this.dialog = {
+                open : true,
+                title : title,
+                message : message,
+                button : button,
+                action : action
+            }
+        },
         resetDialog() {
             this.dialog = {
                 open : false,
@@ -57,8 +66,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
             }
         },
         async fetchSubmission(id : string) {
-            this.getData.error = '';
-            this.resetDialog()
+            this.getData.error = '';           
             try {
                 const response = await api.get('/api/submissions/'  + id);
                 this.getData.data = response.data;
@@ -73,8 +81,39 @@ export const useSubmissionStore = defineStore('submissions-store', {
             this.formError.server = ''
             this.processing = true
             try {
-                console.log(this.formData.company_detail.full_name)
+                
                const response = await api.post('/api/submissions', {
+                    full_name: this.formData.company_detail.full_name,
+                    email: this.formData.company_detail.email,
+                    company_name: this.formData.company_detail.company_name,
+                    alternative_company_name: this.formData.company_detail.alternative_company_name,
+                    company_designation_id: this.formData.company_detail.company_designation_id,
+                    jurisdiction_of_operation_id: this.formData.company_detail.jurisdiction_of_operation_id,
+                    target_jurisdictions: this.formData.company_detail.target_jurisdictions,
+                    number_of_shares: this.formData.company_detail.number_of_shares,
+                    are_all_shares_issued: this.formData.company_detail.are_all_shares_issued,
+                    number_of_issued_shares: this.formData.company_detail.number_of_issued_shares,
+                    share_value_id: this.formData.company_detail.share_value_id,
+                    shareholders: this.formData.shareholders,
+                    beneficial_owners: this.formData.beneficial_owners,
+                    directors: this.formData.directors
+                });
+                
+                return response.data;
+            } catch (err : any) {
+                console.log(err.response?.data?.message || err.message)
+                this.formError.server = err.response?.data?.message || err.message
+            } finally {
+                this.processing = false
+            }
+        },
+        async putSubmission(id : string) {
+            this.formError.server = ''
+            this.processing = true
+            try {
+                
+                const response = await api.put('/api/submissions/'  + id, {
+                    id : id,
                     full_name: this.formData.company_detail.full_name,
                     email: this.formData.company_detail.email,
                     company_name: this.formData.company_detail.company_name,
