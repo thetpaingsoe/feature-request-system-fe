@@ -20,7 +20,7 @@ const childRef = ref()
 const emit = defineEmits(['update:modelValue'])
 
 const components = [CompanyDetailForm, SharedHolders, BeneficialOwner, Director]
-const sectionKeyMap = ['company_detail', 'shareholders', 'beneficial_owner', 'director']
+const sectionKeyMap = ['company_detail', 'shareholders', 'beneficial_owners', 'directors']
 
 const currentComponent = computed(() => components[props.currentSection])
 const sectionKey = computed(() => sectionKeyMap[props.currentSection])

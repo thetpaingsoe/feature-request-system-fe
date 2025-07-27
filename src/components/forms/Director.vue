@@ -6,7 +6,7 @@ import { Director } from '@/types/SubmissionTypes';
 
 const directors = defineModel<Director[]>({
     required: true,    
-    default: () => [{ id: 1, name: '', email: '' }]
+    default: () => []
 });
 
 const getNextDirectorId = () => {

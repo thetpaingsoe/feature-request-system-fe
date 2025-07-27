@@ -7,7 +7,7 @@ import KNumberInput from '../common/KNumberInput.vue';
 
 const shareholders = defineModel<Shareholder[]>({
     required: true,    
-    default: () => [{ id: 1, name: '', email: '', percentage: 0 }]
+    default: () => []
 });
 
 const getNextShareholderId = () => {
@@ -120,6 +120,8 @@ function validate() {
 defineExpose({ validate });
 
 onMounted(() => {
+  console.log("shareholder mount");
+  console.log(shareholders);
   if (shareholders.value.length === 0) {
     addShareholder(); // Add an initial shareholder if none exist
   }

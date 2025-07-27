@@ -1,3 +1,19 @@
+<script setup lang="ts">
+defineProps({
+  currentSection: {
+    type: Number,
+    default: 0
+  },
+  totalSections: {
+    type: Number,
+    default: 0
+  },
+})
+
+defineEmits(['back', 'next', 'save'])
+
+</script>
+
 <template>
   <div class="flex justify-between content-between mt-20 mb-30">
     <div v-if="currentSection === 0" class="basis-1/6"></div>
@@ -36,17 +52,4 @@
   </div>
 </template>
 
-<script setup lang="ts">
-defineProps({
-  currentSection: {
-    type: Number,
-    default: 0
-  },
-  totalSections: {
-    type: Number,
-    default: 0
-  },
-})
 
-defineEmits(['back', 'next', 'save'])
-</script>

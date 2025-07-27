@@ -4,26 +4,26 @@ import KInput from '../common/KInput.vue';
 import { BeneficialOwner } from '@/types/SubmissionTypes';
 import { onMounted } from 'vue';
 
-const beneficialOwners = defineModel<BeneficialOwner[]>({
+const beneficial_owners = defineModel<BeneficialOwner[]>({
     required: true,    
-    default: () => [{ id: 1, name: '', email: '' }]
+    default: () => []
 });
 
 const getNextBeneficialOwnerId = () => {
-    if (beneficialOwners.value.length === 0) {
+    if (beneficial_owners.value.length === 0) {
         return 1;
     }
-    const maxId = Math.max(...beneficialOwners.value.map(s => s.id));
+    const maxId = Math.max(...beneficial_owners.value.map(s => s.id));
     return maxId + 1;
 };
 
 const addBeneficialOwner = () => {
   console.log("adding more owner");
-  beneficialOwners.value.push({ id: getNextBeneficialOwnerId(), name: '', email: '' } as BeneficialOwner);
+  beneficial_owners.value.push({ id: getNextBeneficialOwnerId(), name: '', email: '' } as BeneficialOwner);
 };
 
 const removeBeneficialOwner = (idToRemove: number) => {
-  beneficialOwners.value = beneficialOwners.value.filter(s => s.id !== idToRemove);
+  beneficial_owners.value = beneficial_owners.value.filter(s => s.id !== idToRemove);
 };
 
 const getNameValidationRule = {
@@ -64,7 +64,7 @@ const getEmailValidationState = (beneficialOwnerId: number): Object => {
 
 function validate() {
   let isValid = true;
-  beneficialOwners.value.forEach((beneficialOwner, index) => {
+  beneficial_owners.value.forEach((beneficialOwner, index) => {
 
     // Name
     const isNameValid = getNameValidationRule.validate(beneficialOwner.name);
@@ -94,7 +94,9 @@ defineExpose({ validate });
 
 onMounted(() => {
   
-  if (beneficialOwners.value.length === 0) {
+  console.log("beneficial_owners mount");
+  console.log(beneficial_owners);
+  if (beneficial_owners.value.length === 0) {
     addBeneficialOwner(); // Add an initial beneficialOwner if none exist
   }
 });
@@ -105,13 +107,13 @@ onMounted(() => {
   <div class="mt-8 font-bold text-white">Beneficial Owner</div>
   <div class="h-0.5 bg-primary-light ms-2"></div>
 
-  <div class="flex flex-row mt-8">
-    <div class="text-gray-300 basis-2/6 ms-4 text-sm">
+  <div class="flex flex-row mt-8"> 
+    <div class="text-gray-300 basis-2/6 ms-4 text-sm"> 
       Please provide details for all beneficial owners of the company. This information is essential for regulatory compliance and to identify individuals who ultimately own, control, or have significant influence over the company, even if their ownership is not direct. This helps ensure transparency and prevents illicit activities.
     </div>
     <div class="flex flex-col basis-4/7 ms-12 text-white">
 
-      <div v-for="(beneficialOwner, index) in beneficialOwners" :key="beneficialOwner.id" class="px-4">
+      <div v-for="(beneficialOwner, index) in beneficial_owners" :key="beneficialOwner.id" class="px-4">
         <label :for="`beneficialOwner-${beneficialOwner.id}-name`" class="text-white text-lg font-semibold block mb-2 ">BeneficialOwner {{ index + 1 }}</label>
 
         <KInput
@@ -138,7 +140,7 @@ onMounted(() => {
         />
         
         <button
-          v-if="beneficialOwners.length > 1"
+          v-if="beneficial_owners.length > 1"
           @click="removeBeneficialOwner(beneficialOwner.id)"
           class="text-red-400 text-sm mt-2 mb-4 hover:underline block w-full text-right cursor-pointer"
         >

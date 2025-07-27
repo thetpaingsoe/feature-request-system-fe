@@ -36,7 +36,12 @@ function handleSectionChange(index : number) {
   }
 }
 
-function handleNext() {}
+function handleSave() {
+  console.info(formData.value.company_detail);
+  console.info(formData.value.shareholders);
+  console.info(formData.value.beneficial_owners);
+  console.info(formData.value.directors);
+}
 </script>
 
 <template>
@@ -60,6 +65,7 @@ function handleNext() {}
       :current-section="currentSection"
       :total-sections="sections.length"
       @back="(data) => handleSectionChange(data)"
+      @save="() => handleSave()"
     />
   </main>
 </template>
