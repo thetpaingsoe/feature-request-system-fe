@@ -5,6 +5,7 @@ import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
 import { useSubmissionStore } from '@/stores/submissionStore'
+import { LoaderCircle } from 'lucide-vue-next'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router';
 
@@ -145,18 +146,24 @@ function handleSave() {
     />
 
     <!-- Form Detail Screen -->
-    <SectionForm :current-section="currentSection" v-model="submissionStore.formData" ref="sectionFormRef" />
+    <div v-if="submissionStore.getData.isLoading" class="w-full mt-8 text-white justify-center items-center flex">
+      <LoaderCircle class="me-2 animate-spin" />
+      Loading...
+    </div>
+    <div v-else>
+      <SectionForm  :current-section="currentSection" v-model="submissionStore.formData" ref="sectionFormRef" />
 
-    <!-- Actions -->
-    <Actions
-      @next="(data) => handleSectionChange(data)"
-      :current-section="currentSection"
-      :total-sections="sections.length"
-      @back="(data) => handleSectionChange(data)"
-      @save="() => handleSave()"
-      @submit="() => handleSubmit()"
-      :id="props.id"
-    />
+      <!-- Actions -->
+      <Actions
+        @next="(data) => handleSectionChange(data)"
+        :current-section="currentSection"
+        :total-sections="sections.length"
+        @back="(data) => handleSectionChange(data)"
+        @save="() => handleSave()"
+        @submit="() => handleSubmit()"
+        :id="props.id"
+      />
+    </div>
 
     <KDialog 
       :title="submissionStore.dialog.title"

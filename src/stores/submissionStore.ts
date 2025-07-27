@@ -20,6 +20,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
             directors: [],
         } as FormDataStructure,
         getData : { // This is for Get by ID
+            isLoading : false,
             data : {} as Submission, 
             error : ''
         },
@@ -66,6 +67,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
             }
         },
         async fetchSubmission(id : string) {
+            this.getData.isLoading = true;
             this.getData.error = '';           
             try {
                 const response = await api.get('/api/submissions/'  + id);
@@ -73,8 +75,9 @@ export const useSubmissionStore = defineStore('submissions-store', {
                 console.log(response.data);
             } catch (err: any) {
                 console.log(err.response?.data?.message || err.message)
-                this.getData.error = err.response?.data?.message || err.message
-                
+                this.getData.error = err.response?.data?.message || err.message                
+            } finally {
+                this.getData.isLoading = false;
             }
         },
         async postSubmission() {
