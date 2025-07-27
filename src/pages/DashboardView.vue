@@ -24,6 +24,13 @@ function submissionEditHandle(){
     });    
 }
 
+function submissionViewHandle(){
+    router.push({
+        name: 'submission', 
+        params: { id: 9 } 
+    });    
+}
+
 async function logout() {
     try {
         await store.logout();  
@@ -61,10 +68,17 @@ onMounted(() => {
         New Submission
     </Button>
     </div>
-    <div class="my-6 flex items-center justify-start mt-8 w-fit">
+    <div class="my-2 flex items-center justify-start w-fit">
     <Button class="w-full" :disabled="store.processing" @click="submissionEditHandle">
         <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
         Edit Submission
+    </Button>
+    </div>
+
+    <div class="my-2 flex items-center justify-start w-fit">
+    <Button class="w-full" :disabled="store.processing" @click="submissionViewHandle">
+        <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
+        View Submission
     </Button>
     </div>
 

@@ -3,6 +3,7 @@ import HomeView from '@/pages/HomeView.vue'
 import LoginView from '@/pages/LoginView.vue'
 import FormEntryView from '@/pages/FormEntryView.vue'
 import DashboardView from '@/pages/DashboardView.vue'
+import SubmissionDetail from '@/pages/SubmissionDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,13 @@ const router = createRouter({
       path: '/entry/:id?',
       name: 'entry',
       component: FormEntryView,
+      props: true,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/submissions/:id?',
+      name: 'submission',
+      component: SubmissionDetail,
       props: true,
       meta: { requiresAuth: true },
     },
