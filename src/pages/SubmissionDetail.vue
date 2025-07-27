@@ -10,6 +10,8 @@ import RHeadingSmall from '@/components/RHeadingSmall.vue';
 import SubmissionLogUI from '@/components/SubmissionLogUI.vue';
 import TextArea from '@/components/ui/textarea/TextArea.vue';
 import KTag from '@/components/common/KTag.vue';
+import Label from '@/components/ui/label/Label.vue';
+import InputError from '@/components/InputError.vue';
 
 
 interface Props {
@@ -50,11 +52,30 @@ async function initData() {
       if (col2Ref.value) {
         col2Ref.value.scrollTop = col2Ref.value.scrollHeight;      
       }
-    }, 100);
+    }, 500);
     
   }
 }
 
+function callbackForReject() {
+  console.log("it accept!");
+}
+function handleReject() {
+  submissionStore.showDialog("Would you like to reject ?", 
+  "After you reject the feedback, you will not able to update the submission data again.", 
+  callbackForAccept, 
+  "Continue");
+}
+
+function callbackForAccept() {
+  console.log("it accept!");
+}
+function handleAccept() {
+  submissionStore.showDialog("Would you like to accept ?", 
+  "After you accept the feedback, you will not able to update the submission data again. Please make sure your data are updated acoording to the feedback.", 
+  callbackForAccept, 
+  "Continue");
+}
 function handleReply() {
   isReply.value = !isReply.value;
   setTimeout(function() {
@@ -62,6 +83,18 @@ function handleReply() {
         col2Ref.value.scrollTop = col2Ref.value.scrollHeight;      
       }
     }, 100);
+}
+
+async function handleReplyNote() {
+  if(props.id) {
+    
+    await submissionLogStore.postSubmissionLog(props.id, currentNote.value);
+    isReply.value = !isReply.value;
+    currentNote.value = '';
+    
+    submissionLogStore.fetchSubmissionLogs(props.id);
+    // need to refresh!
+  }
 }
 
 const col2Ref = ref<HTMLElement | null>(null);
@@ -156,7 +189,7 @@ onMounted(() => {
           <div class="w-full" v-for="s in submissionLogStore.data " :key="s.id">
               <SubmissionLogUI :submission-log="s" />
           </div>
-
+          
           <!-- Feedback Status Reply ( Accept, Reject and Reply ) -->
           <div class="flex flex-col items-right justify-right mx-2 mb-8" v-if="submissionStore.getData.data.status == 'feedback'">
             <Label for="note" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 mt-2"> Do you accept the feedback ? </Label>
@@ -164,7 +197,7 @@ onMounted(() => {
               <button
                 variant="default"
                 class="w-fit text-green-700 hover:text-green-500 hover:bg-primary-light/25 border bg-primary-light/5 font-semibold py-1 px-4 rounded-md transition-colors duration-200"
-                @click=""
+                @click="handleAccept"
                 :class="isReply ?  'cursor-not-allowed border-gray-600' : 'cursor-pointer border-primary-light/55'">
                 Accept
               </button>
@@ -172,7 +205,7 @@ onMounted(() => {
               <button
                 variant="default"
                 class="ms-2 w-fit text-rose-700 hover:text-rose-500 hover:bg-primary-light/25 border  bg-primary-light/5 font-semibold py-1 px-4 rounded-md transition-colors duration-200"
-                @click=""
+                @click="handleReject"
                 :class="isReply ? 'cursor-not-allowed border-gray-600' : 'cursor-pointer border-primary-light/55'">
                 Reject
               </button>
@@ -181,7 +214,7 @@ onMounted(() => {
                 variant="default"
                 class="cursor-pointer  ms-2 w-fit text-gray-500 hover:text-gray-300 hover:bg-primary-light/25 border border-gray-600 bg-primary-light/5 font-semibold py-1 px-4 rounded-md transition-colors duration-200"
                 @click="handleReply"
-                :class="isReply ?  '  border-primary-light/55' : 'border-gray-600'">
+                :class="isReply ?  ' border-primary-light/55' : 'border-gray-600'">
                 <div class="flex items-center">
                   <Check class='size-4 me-2' v-if="isReply" /> Reply
                 </div>
@@ -202,7 +235,7 @@ onMounted(() => {
               />
               <InputError :message="currentNoteError" />
               
-              <button class=" w-full mt-4 bg-primary text-white rounded py-2 mb-4" tabindex="5" :disabled="processing" @click="">
+              <button class=" w-full mt-4 bg-primary text-white rounded py-2 mb-4" tabindex="5" :disabled="processing" @click="handleReplyNote">
                   <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
                   Reply Message
               </button>
@@ -218,7 +251,7 @@ onMounted(() => {
     :title="submissionStore.dialog.title"
     :message="submissionStore.dialog.message"
     :button="submissionStore.dialog.button"
-    :open="submissionStore.dialog.open"
+    v-model:open="submissionStore.dialog.open"
     @close="submissionStore.dialog.action"
   />
 </template>

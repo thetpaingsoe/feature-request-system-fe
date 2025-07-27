@@ -49,13 +49,15 @@ export const useSubmissionStore = defineStore('submissions-store', {
             }
         },
         showDialog(title : string, message : string, action : any = () => {}, button : string = "OK"){
-            this.dialog = {
-                open : true,
-                title : title,
-                message : message,
-                button : button,
-                action : action
+            if(this.dialog.open == true) {
+                this.dialog.open = false;
+                console.log(this.dialog.open);
             }
+            this.dialog.open = true;
+            this.dialog.title = title;
+            this.dialog.message = message;
+            this.dialog.button =button;
+            this.dialog.action = action;
         },
         resetDialog() {
             this.dialog = {

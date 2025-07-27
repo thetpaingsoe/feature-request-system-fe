@@ -42,7 +42,7 @@ const closeModal = () => {
         <!-- Dialog Header with Title and Description -->
         <DialogHeader class="space-y-3 text-center">
           <!-- Bind DialogTitle to the 'title' prop -->
-          <DialogTitle class="text-2xl font-bold text-primary-light">{{ props.title }}</DialogTitle>
+          <DialogTitle class="text-xl font-bold text-primary-light">{{ props.title }}</DialogTitle>
           <!-- Bind DialogDescription to the 'message' prop -->
           <DialogDescription class="text-gray-300 text-base">
             {{ props.message }}
@@ -56,7 +56,7 @@ const closeModal = () => {
               variant="secondary"
               id="dialog-ok-button"
               @click="closeModal"
-              class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md transition-colors duration-200"
+              class="w-full sm:w-auto bg-primary hover:bg-primary-light text-white font-semibold py-2 px-6 rounded-md transition-colors duration-200"
             >
               {{ props.button || "OK" }}
             </Button>
