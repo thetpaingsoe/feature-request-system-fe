@@ -2,6 +2,8 @@
 import { reactive } from 'vue';
 import KInput from '../common/KInput.vue';
 import { Shareholder } from '@/types/SubmissionTypes';
+import { onMounted } from 'vue';
+import KNumberInput from '../common/KNumberInput.vue';
 
 const shareholders = defineModel<Shareholder[]>({
     required: true,    
@@ -117,8 +119,6 @@ function validate() {
 
 defineExpose({ validate });
 
-import { onMounted } from 'vue';
-import KNumberInput from '../common/KNumberInput.vue';
 onMounted(() => {
   if (shareholders.value.length === 0) {
     addShareholder(); // Add an initial shareholder if none exist

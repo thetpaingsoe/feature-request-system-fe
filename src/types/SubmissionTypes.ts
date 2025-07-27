@@ -23,7 +23,6 @@ export type BeneficialOwner = {
 export type Director = {
   id : number;
   name: string;
-  position: string;
   email: string;
 };
 

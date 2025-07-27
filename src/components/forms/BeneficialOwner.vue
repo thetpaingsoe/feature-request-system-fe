@@ -2,6 +2,7 @@
 import { reactive } from 'vue';
 import KInput from '../common/KInput.vue';
 import { BeneficialOwner } from '@/types/SubmissionTypes';
+import { onMounted } from 'vue';
 
 const beneficialOwners = defineModel<BeneficialOwner[]>({
     required: true,    
@@ -91,7 +92,6 @@ function validate() {
 
 defineExpose({ validate });
 
-import { onMounted } from 'vue';
 onMounted(() => {
   
   if (beneficialOwners.value.length === 0) {
