@@ -6,7 +6,7 @@ import type { FormDataStructure, Submission } from '@/types/SubmissionTypes';
 export const useSubmissionStore = defineStore('submissions-store', {
     state: () => ({
         processing: false,
-        data: [] as Array<Submission>,
+        data: [] as Array<Submission>, // This is for List
         filters : Object,
         sorting : Object,
         paginationInfo : Object,
@@ -18,7 +18,18 @@ export const useSubmissionStore = defineStore('submissions-store', {
             shareholders: [],
             beneficial_owners: [],
             directors: [],
-        } as FormDataStructure
+        } as FormDataStructure,
+        getData : { // This is for Get by ID
+            data : {} as Submission, 
+            error : ''
+        },
+        dialog : {
+            open : false,
+            title : '',
+            message : '',
+            button : "OK",
+            action : () => {}
+        }
     }),
     actions: {        
         goTo(router: Router, name : string = 'dashboard') {
@@ -34,6 +45,28 @@ export const useSubmissionStore = defineStore('submissions-store', {
                 this.sorting = response.data.sorting;                
             } catch (err) {
                 console.log(err);
+            }
+        },
+        resetDialog() {
+            this.dialog = {
+                open : false,
+                title : '',
+                message : '',
+                button : "OK",
+                action : () => {}
+            }
+        },
+        async fetchSubmission(id : string) {
+            this.getData.error = '';
+            this.resetDialog()
+            try {
+                const response = await api.get('/api/submissions/'  + id);
+                this.getData.data = response.data;
+                console.log(response.data);
+            } catch (err: any) {
+                console.log(err.response?.data?.message || err.message)
+                this.getData.error = err.response?.data?.message || err.message
+                
             }
         },
         async postSubmission() {

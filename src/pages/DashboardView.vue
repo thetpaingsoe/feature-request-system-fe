@@ -20,7 +20,7 @@ function submissionEntryHandle(){
 function submissionEditHandle(){
     router.push({
         name: 'entry', 
-        params: { id: 999 } 
+        params: { id: 9 } 
     });    
 }
 

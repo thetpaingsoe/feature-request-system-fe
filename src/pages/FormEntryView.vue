@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Actions from '@/components/Actions.vue'
+import KDialog from '@/components/common/KDialog.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
@@ -19,9 +20,32 @@ const submissionStore = useSubmissionStore();
 
 const sectionFormRef = ref()
 
+function handleItemLoadError() {
+  router.push({ name: "dashboard" });
+}
+async function initData() {
+  if(props.id) {
+    await submissionStore.fetchSubmission(props.id );
+    submissionStore.formData = {
+      company_detail: submissionStore.getData.data,
+      shareholders: submissionStore.getData.data.shareholders,
+      beneficial_owners: submissionStore.getData.data.beneficial_owners,
+      directors: submissionStore.getData.data.directors,
+    };
+
+    if(submissionStore.getData.error != null && submissionStore.getData.error.trim() != '') {
+      submissionStore.dialog.open = true;
+      submissionStore.dialog.title = "Error!";
+      submissionStore.dialog.message = submissionStore.getData.error;
+      submissionStore.dialog.action = handleItemLoadError;
+    }
+  }
+}
+
 onMounted(() => {
   if (props.id) {
     currentSection.value = 0;
+    initData();
     
   } else {
     submissionStore.formData = JSON.parse(localStorage.getItem('formData') || JSON.stringify({
@@ -110,6 +134,14 @@ function handleSave() {
       @save="() => handleSave()"
       @submit="() => handleSubmit()"
       :id="props.id"
+    />
+
+    <KDialog 
+      :title="submissionStore.dialog.title"
+      :message="submissionStore.dialog.message"
+      :button="submissionStore.dialog.button"
+      :open="submissionStore.dialog.open"
+      @close="submissionStore.dialog.action"
     />
   </main>
 </template>
