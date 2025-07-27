@@ -297,7 +297,9 @@ function validate() {
     status = false
   }
 
-  if (!modelValue.value.are_all_shares_issued) {
+  if (modelValue.value.are_all_shares_issued != false 
+      && modelValue.value.are_all_shares_issued != true) {
+    
     areAllSharedIssuedValidateionState.value = {
       status: true,
       message: '',
@@ -306,6 +308,7 @@ function validate() {
   }
 
   if (!modelValue.value.number_of_issued_shares) {
+    
     issuedSharesValidateionState.value = {
       status: true,
       message: '',
@@ -314,6 +317,7 @@ function validate() {
   }
 
   if (!modelValue.value.share_value_id) {
+    
     valuePerSharesValidateionState.value = {
       status: true,
       message: '',
