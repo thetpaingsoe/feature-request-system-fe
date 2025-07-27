@@ -12,7 +12,16 @@ const submissionStore = useSubmissionStore()
 const router = useRouter();
 
 function submissionEntryHandle(){
-    store.goTo(router, 'entry');
+    router.push({
+        name: 'entry',         
+    });    
+}
+
+function submissionEditHandle(){
+    router.push({
+        name: 'entry', 
+        params: { id: 999 } 
+    });    
 }
 
 async function logout() {
@@ -50,6 +59,12 @@ onMounted(() => {
     <Button class="w-full" :disabled="store.processing" @click="submissionEntryHandle">
         <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
         New Submission
+    </Button>
+    </div>
+    <div class="my-6 flex items-center justify-start mt-8 w-fit">
+    <Button class="w-full" :disabled="store.processing" @click="submissionEditHandle">
+        <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
+        Edit Submission
     </Button>
     </div>
 

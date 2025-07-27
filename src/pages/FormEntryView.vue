@@ -3,24 +3,65 @@ import Actions from '@/components/Actions.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
-import { ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router';
 
+interface Props {
+  id?: string;
+}
+const props = defineProps<Props>();
+
+const currentSection = ref(0);
 const sections = ref<string[]>(['Company Details', 'Shareholders', 'Beneficial Owner', 'Director']);
-const currentSection = ref(0)
+
+onMounted(() => {
+  if (props.id) {
+    currentSection.value = 0;
+    
+  } else {
+    formData.value = JSON.parse(localStorage.getItem('formData') || JSON.stringify({
+      company_detail: {},
+      shareholders: [],
+      beneficial_owners: [],
+      directors: [],
+    }))
+    currentSection.value = parseInt(localStorage.getItem('currentSection') || '0', 10);
+  }
+})
+
+console.log(props);
+
+
+watch(currentSection, (newVal) => {
+  if(!props.id){
+    // Save currentSection to localStorage whenever it changes
+    localStorage.setItem('currentSection', newVal.toString());
+  }
+});
+
+const router = useRouter();
 
 const sectionFormRef = ref()
 
 const formData = ref(
-  JSON.parse(localStorage.getItem('formData') || JSON.stringify({
-    company_detail: {},
-    shareholders: [],
-    beneficial_owners: [],
-    directors: [],
-  }))
+  {
+      company_detail: {},
+      shareholders: [],
+      beneficial_owners: [],
+      directors: [],
+    }
+  // JSON.parse(localStorage.getItem('formData') || JSON.stringify({
+  //   company_detail: {},
+  //   shareholders: [],
+  //   beneficial_owners: [],
+  //   directors: [],
+  // }))
 )
 
 watch(formData, (newVal) => {
-  localStorage.setItem('formData', JSON.stringify(newVal))
+  if(!props.id){
+    localStorage.setItem('formData', JSON.stringify(newVal))
+  }
 }, { deep: true })
 
 function handleSectionChange(index : number) {
@@ -36,11 +77,18 @@ function handleSectionChange(index : number) {
   }
 }
 
+function handleSubmit() {
+  alert("submit");
+}
+
 function handleSave() {
-  console.info(formData.value.company_detail);
-  console.info(formData.value.shareholders);
-  console.info(formData.value.beneficial_owners);
-  console.info(formData.value.directors);
+  // Data Sets
+  // formData.value.company_detail
+  // formData.value.shareholders
+  // formData.value.beneficial_owners
+  // formData.value.directors
+  localStorage.setItem('formData', JSON.stringify(formData.value))
+  router.push({ name: "dashboard" });
 }
 </script>
 
@@ -66,6 +114,8 @@ function handleSave() {
       :total-sections="sections.length"
       @back="(data) => handleSectionChange(data)"
       @save="() => handleSave()"
+      @submit="() => handleSubmit()"
+      :id="props.id"
     />
   </main>
 </template>

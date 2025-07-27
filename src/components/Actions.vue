@@ -8,14 +8,18 @@ defineProps({
     type: Number,
     default: 0
   },
+  id: {
+    type: String || null,
+    default: null
+  },
 })
 
-defineEmits(['back', 'next', 'save'])
+defineEmits(['back', 'next', 'save', 'submit'])
 
 </script>
 
 <template>
-  <div class="flex justify-between content-between mt-20 mb-30">
+  <div class="flex justify-between content-between mt-20 mb-30 h-18">
     <div v-if="currentSection === 0" class="basis-1/6"></div>
     <button
       v-else
@@ -27,7 +31,9 @@ defineEmits(['back', 'next', 'save'])
       BACK
     </button>
 
+    <div v-if="id != null" class=" basis-1/6 w-fit"></div>
     <button
+      v-else
       class="bg-background border-half-px border-gray-200 text-white rounded-sm hover:bg-gray-800 py-2 px-8 cursor-pointer basis-1/3 w-fit"
       @click="$emit('save')"
     >
@@ -39,7 +45,17 @@ defineEmits(['back', 'next', 'save'])
       >
     </button>
 
-    <div v-if="currentSection == totalSections - 1" class="basis-1/6"></div>
+    
+    <button
+      id="submitForm"
+      class="bg-primary text-white rounded-sm hover:bg-primary-light py-2 px-8 cursor-pointer basis-1/6 w-fit"
+      @click="$emit('submit')"
+      v-if="currentSection == totalSections - 1"
+    >
+      SUBMIT
+      <!-- <i class="ms-2 fa-solid fa-arrow-right-long"></i> -->
+    </button>
+    
     <button
       v-else
       id="nextForm"

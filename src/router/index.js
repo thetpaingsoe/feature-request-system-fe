@@ -19,9 +19,10 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/entry',
+      path: '/entry/:id?',
       name: 'entry',
       component: FormEntryView,
+      props: true,
       meta: { requiresAuth: true },
     },
     {
