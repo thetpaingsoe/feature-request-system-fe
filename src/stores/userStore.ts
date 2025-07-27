@@ -2,7 +2,7 @@ import api from '@/services/api'
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router';
 
-export const useLoginStore = defineStore('login-store', {
+export const useUserStore = defineStore('user-store', {
     state: () => ({
         processing: false,
         isFormReady: false,
@@ -20,25 +20,26 @@ export const useLoginStore = defineStore('login-store', {
     
     }),
     actions: {
-        
-        goTo(router: Router, name : string = 'dashboard') {
-            console.log(" ➡ " + name);
-            router.push({ name: name });
-        },
         async login() {
+            this.processing = true;
             try {
                 const email = this.form.email;
                 const password = this.form.password;
                 const response = await api.post('/api/login', { email : email, password: password});
 
                 localStorage.setItem("auth_token", response.data.token);
-
+                localStorage.setItem("user", JSON.stringify(response.data.user));
+                console.log(response.data);
                 this.user = response.data.user;
                 this.isAuthenticated = true;
 
-            } catch (err) {
+                return response.data.user;
+            } catch (err : any) {
                 console.error(err);
-                throw err;
+                console.log(err.response?.data?.message || err.message)
+                this.formError.server = err.response?.data?.message || err.message
+            } finally {
+                this.processing = false;
             }
         },
 

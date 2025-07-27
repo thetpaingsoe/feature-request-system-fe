@@ -1,6 +1,6 @@
 import api from '@/services/api'
 import { defineStore } from 'pinia'
-import { SubmissionLog } from '@/types/SubmissionLogTypes';
+import { SubmissionLog, SubmissionLogPagination } from '@/types/SubmissionLogTypes';
 
 export const useSubmissionLogStore = defineStore('submission-logs-store', {
     state: () => ({
@@ -8,7 +8,7 @@ export const useSubmissionLogStore = defineStore('submission-logs-store', {
         data: [] as Array<SubmissionLog>, // This is for List
         filters : Object,
         sorting : Object,
-        paginationInfo : Object,
+        paginationInfo : {} as SubmissionLogPagination,
         formError: {
             server: '',
         },        
@@ -44,7 +44,7 @@ export const useSubmissionLogStore = defineStore('submission-logs-store', {
             try {
                 const response = await api.get('/api/submission-logs/' + submission_id);
                 this.paginationInfo = response.data.submissionLogsPagination;
-                this.data = response.data.submissionLogsPagination.data;
+                this.data = response.data.submissionLogsPagination.data.reverse();
                 this.filters = response.data.filters;
                 this.sorting = response.data.sorting;                                
             } catch (err) {

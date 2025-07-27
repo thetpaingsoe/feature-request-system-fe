@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
-import { useLoginStore } from '@/stores/loginStore';
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import { useSubmissionStore } from '@/stores/submissionStore';
+import { useUserStore } from '@/stores/userStore';
 import { LoaderCircle } from 'lucide-vue-next';
+
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 
-const store = useLoginStore()
+const userStore = useUserStore()
 const submissionStore = useSubmissionStore()
 const router = useRouter();
 
@@ -33,10 +35,10 @@ function submissionViewHandle(){
 
 async function logout() {
     try {
-        await store.logout();  
-        store.goTo(router, 'login');      
+        await userStore.logout();  
+        router.push({name: 'login'});        
     } catch (err) {
-        store.formError.server = 'Invalid email or password';
+        userStore.formError.server = 'Invalid email or password';
     }
 }
 
@@ -52,41 +54,46 @@ onMounted(() => {
 });
 </script>
 <template>
-    <h2 class="text-white text-4xl w-full text-center mt-14"> Dashboard </h2>
+    <DashboardLayout>
+            <h2 class="text-white text-4xl w-full text-center mt-14"> Dashboard </h2>
 
-    <div class="my-6 flex items-center justify-start mt-8 w-fit">
-        <Button class="w-full" :disabled="store.processing" @click="logout">
-        <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
-            Logout
-        </Button>
+            <div class="my-6 flex items-center justify-start mt-8 w-fit">
+                <Button class="w-full" :disabled="userStore.processing" @click="logout">
+                <LoaderCircle v-if="userStore.processing" class="h-4 w-4 animate-spin" />
+                    Logout
+                </Button>
+                
+            </div>
+
+            <div class="my-6 flex items-center justify-start mt-8 w-fit">
+            <Button class="w-full" :disabled="userStore.processing" @click="submissionEntryHandle">
+                <LoaderCircle v-if="userStore.processing" class="h-4 w-4 animate-spin" />
+                New Submission
+            </Button>
+            </div>
+            <div class="my-2 flex items-center justify-start w-fit">
+            <Button class="w-full" :disabled="userStore.processing" @click="submissionEditHandle">
+                <LoaderCircle v-if="userStore.processing" class="h-4 w-4 animate-spin" />
+                Edit Submission
+            </Button>
+            </div>
+
+            <div class="my-2 flex items-center justify-start w-fit">
+            <Button class="w-full" :disabled="userStore.processing" @click="submissionViewHandle">
+                <LoaderCircle v-if="userStore.processing" class="h-4 w-4 animate-spin" />
+                View Submission
+            </Button>
+            </div>
+
+            <div class="text-white">
+                Data : 
+                <div v-for="data in submissionStore.data" :key="data.id">
+                    {{ data.full_name }}
+                    {{ data.target_jurisdiction_names }}
+                </div>
+            </div>
+
+            <div class="text-white" v-for="i in 40"> {{ i }}</div>
         
-    </div>
-
-    <div class="my-6 flex items-center justify-start mt-8 w-fit">
-    <Button class="w-full" :disabled="store.processing" @click="submissionEntryHandle">
-        <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
-        New Submission
-    </Button>
-    </div>
-    <div class="my-2 flex items-center justify-start w-fit">
-    <Button class="w-full" :disabled="store.processing" @click="submissionEditHandle">
-        <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
-        Edit Submission
-    </Button>
-    </div>
-
-    <div class="my-2 flex items-center justify-start w-fit">
-    <Button class="w-full" :disabled="store.processing" @click="submissionViewHandle">
-        <LoaderCircle v-if="store.processing" class="h-4 w-4 animate-spin" />
-        View Submission
-    </Button>
-    </div>
-
-    <div class="text-white">
-        Data : 
-        <div v-for="data in submissionStore.data" :key="data.id">
-            {{ data.full_name }}
-            {{ data.target_jurisdiction_names }}
-        </div>
-    </div>
+    </DashboardLayout>
 </template>

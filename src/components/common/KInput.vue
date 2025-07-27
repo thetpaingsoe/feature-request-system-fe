@@ -37,6 +37,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  highlight : {
+    type : Boolean,
+    default : true
+  }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -100,7 +104,7 @@ watch(
         :class="[
           touched && !validationState.status
             ? 'border-red-400  focus:ring-red-200 text-red-400'
-            : modelValue != ''
+            : modelValue != '' && highlight
               ? 'border-green-400  focus:ring-gren-400 text-gray-800'
               : 'border-gray-300  focus:ring-blue-200 text-gray-800',
         ]"
@@ -108,7 +112,7 @@ watch(
       />
       <!-- Validation Icon -->
       <span
-        v-if="touched"
+        v-if="touched && highlight"
         :class="[
           'absolute right-3 top-1/2 -translate-y-1/2 text-lg mt-1',
           validationState.status ? 'text-green-500' : 'text-red-400',

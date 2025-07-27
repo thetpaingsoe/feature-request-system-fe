@@ -4,6 +4,7 @@ import KDialog from '@/components/common/KDialog.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
+import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import { useSubmissionStore } from '@/stores/submissionStore'
 import { LoaderCircle } from 'lucide-vue-next'
 import { onMounted, ref, watch } from 'vue'
@@ -134,7 +135,8 @@ function handleSave() {
 </script>
 
 <template>
-  <main class="flex flex-col bg-background">
+  <DashboardLayout>
+  <!-- <main class="flex flex-col bg-background"> -->
     <!-- Form Header -->
     <FormHeader />
 
@@ -172,5 +174,6 @@ function handleSave() {
       :open="submissionStore.dialog.open"
       @close="submissionStore.dialog.action"
     />
-  </main>
+  <!-- </main> -->
+  </DashboardLayout>
 </template>
