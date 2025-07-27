@@ -1,7 +1,7 @@
 import api from '@/services/api'
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router';
-import type { Submission } from '@/types/SubmissionTypes';
+import type { FormDataStructure, Submission } from '@/types/SubmissionTypes';
 
 export const useSubmissionStore = defineStore('submissions-store', {
     state: () => ({
@@ -9,7 +9,16 @@ export const useSubmissionStore = defineStore('submissions-store', {
         data: [] as Array<Submission>,
         filters : Object,
         sorting : Object,
-        paginationInfo : Object
+        paginationInfo : Object,
+        formError: {
+            server: '',
+        },
+        formData : {
+            company_detail: {},
+            shareholders: [],
+            beneficial_owners: [],
+            directors: [],
+        } as FormDataStructure
     }),
     actions: {        
         goTo(router: Router, name : string = 'dashboard') {
@@ -25,6 +34,36 @@ export const useSubmissionStore = defineStore('submissions-store', {
                 this.sorting = response.data.sorting;                
             } catch (err) {
                 console.log(err);
+            }
+        },
+        async postSubmission() {
+            this.formError.server = ''
+            this.processing = true
+            try {
+                console.log(this.formData.company_detail.full_name)
+               const response = await api.post('/api/submissions', {
+                    full_name: this.formData.company_detail.full_name,
+                    email: this.formData.company_detail.email,
+                    company_name: this.formData.company_detail.company_name,
+                    alternative_company_name: this.formData.company_detail.alternative_company_name,
+                    company_designation_id: this.formData.company_detail.company_designation_id,
+                    jurisdiction_of_operation_id: this.formData.company_detail.jurisdiction_of_operation_id,
+                    target_jurisdictions: this.formData.company_detail.target_jurisdictions,
+                    number_of_shares: this.formData.company_detail.number_of_shares,
+                    are_all_shares_issued: this.formData.company_detail.are_all_shares_issued,
+                    number_of_issued_shares: this.formData.company_detail.number_of_issued_shares,
+                    share_value_id: this.formData.company_detail.share_value_id,
+                    shareholders: this.formData.shareholders,
+                    beneficial_owners: this.formData.beneficial_owners,
+                    directors: this.formData.directors
+                });
+                
+                return response.data;
+            } catch (err : any) {
+                console.log(err.response?.data?.message || err.message)
+                this.formError.server = err.response?.data?.message || err.message
+            } finally {
+                this.processing = false
             }
         }
   }

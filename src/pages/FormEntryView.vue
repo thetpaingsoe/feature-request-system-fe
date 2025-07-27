@@ -3,6 +3,7 @@ import Actions from '@/components/Actions.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
 import SectionNavigation from '@/components/SectionNavigation.vue'
+import { useSubmissionStore } from '@/stores/submissionStore'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router';
 
@@ -13,13 +14,17 @@ const props = defineProps<Props>();
 
 const currentSection = ref(0);
 const sections = ref<string[]>(['Company Details', 'Shareholders', 'Beneficial Owner', 'Director']);
+const router = useRouter();
+const submissionStore = useSubmissionStore();
+
+const sectionFormRef = ref()
 
 onMounted(() => {
   if (props.id) {
     currentSection.value = 0;
     
   } else {
-    formData.value = JSON.parse(localStorage.getItem('formData') || JSON.stringify({
+    submissionStore.formData = JSON.parse(localStorage.getItem('formData') || JSON.stringify({
       company_detail: {},
       shareholders: [],
       beneficial_owners: [],
@@ -29,9 +34,6 @@ onMounted(() => {
   }
 })
 
-console.log(props);
-
-
 watch(currentSection, (newVal) => {
   if(!props.id){
     // Save currentSection to localStorage whenever it changes
@@ -39,26 +41,7 @@ watch(currentSection, (newVal) => {
   }
 });
 
-const router = useRouter();
-
-const sectionFormRef = ref()
-
-const formData = ref(
-  {
-      company_detail: {},
-      shareholders: [],
-      beneficial_owners: [],
-      directors: [],
-    }
-  // JSON.parse(localStorage.getItem('formData') || JSON.stringify({
-  //   company_detail: {},
-  //   shareholders: [],
-  //   beneficial_owners: [],
-  //   directors: [],
-  // }))
-)
-
-watch(formData, (newVal) => {
+watch(submissionStore.formData, (newVal) => {
   if(!props.id){
     localStorage.setItem('formData', JSON.stringify(newVal))
   }
@@ -77,18 +60,29 @@ function handleSectionChange(index : number) {
   }
 }
 
-function handleSubmit() {
-  alert("submit");
+async function handleSubmit() {
+  if (sectionFormRef?.value?.validate()) {
+    const data = await submissionStore.postSubmission();
+    if(data != null) {
+      localStorage.removeItem('formData'); 
+      localStorage.removeItem('currentSection');
+      router.push({ name: "dashboard" });
+    }
+  }
 }
 
+// This will only save in the local storage.
+// And it will not work for the edit mode with id.
 function handleSave() {
-  // Data Sets
-  // formData.value.company_detail
-  // formData.value.shareholders
-  // formData.value.beneficial_owners
-  // formData.value.directors
-  localStorage.setItem('formData', JSON.stringify(formData.value))
-  router.push({ name: "dashboard" });
+  if(!props.id){
+    // Data Sets
+    // formData.value.company_detail
+    // formData.value.shareholders
+    // formData.value.beneficial_owners
+    // formData.value.directors
+    localStorage.setItem('formData', JSON.stringify(submissionStore.formData))
+    router.push({ name: "dashboard" });
+  }
 }
 </script>
 
@@ -105,7 +99,7 @@ function handleSave() {
     />
 
     <!-- Form Detail Screen -->
-    <SectionForm :current-section="currentSection" v-model="formData" ref="sectionFormRef" />
+    <SectionForm :current-section="currentSection" v-model="submissionStore.formData" ref="sectionFormRef" />
 
     <!-- Actions -->
     <Actions
