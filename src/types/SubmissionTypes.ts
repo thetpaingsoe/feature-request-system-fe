@@ -14,12 +14,14 @@ export type Shareholder = {
   percentage: number;
 };
 
-type BeneficialOwner = {
+export type BeneficialOwner = {
+  id : number;
   name: string;
-  relationship: string;
+  email: string;
 };
 
-type Director = {
+export type Director = {
+  id : number;
   name: string;
   position: string;
   email: string;

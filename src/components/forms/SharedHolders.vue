@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import KInput from '../common/KInput.vue';
 import { Shareholder } from '@/types/SubmissionTypes';
 
 const shareholders = defineModel<Shareholder[]>({
     required: true,    
-    default: () => [{ name: '', email: '', percentage: '' }]
+    default: () => [{ id: 1, name: '', email: '', percentage: 0 }]
 });
 
 const getNextShareholderId = () => {
@@ -17,7 +17,7 @@ const getNextShareholderId = () => {
 };
 
 const addShareholder = () => {
-  shareholders.value.push({ id: getNextShareholderId(), name: '', email: '' } as Shareholder);
+  shareholders.value.push({ id: getNextShareholderId(), name: '', email: '', percentage: 0 } as Shareholder);
 };
 
 const removeShareholder = (idToRemove: number) => {
