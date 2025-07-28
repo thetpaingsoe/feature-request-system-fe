@@ -40,11 +40,24 @@ export const useSubmissionLogStore = defineStore('submission-logs-store', {
                 action : () => {}
             }
         },
-        async fetchSubmissionLogs(submission_id : string) {
+        async fetchSubmissionLogs(submission_id : string, page : number | null = null) {
             try {
-                const response = await api.get('/api/submission-logs/' + submission_id);
+                var param = {};
+                if(page) {
+                    param = {
+                        page : page
+                    }
+                }
+                const response = await api.get('/api/submission-logs/' + submission_id, {
+                    params : param
+                });
                 this.paginationInfo = response.data.submissionLogsPagination;
-                this.data = response.data.submissionLogsPagination.data.reverse();
+                if(page) {
+                    const tmp = response.data.submissionLogsPagination.data.reverse();
+                    this.data = [...tmp, ...this.data];                    
+                }else {
+                    this.data = response.data.submissionLogsPagination.data.reverse();
+                }
                 this.filters = response.data.filters;
                 this.sorting = response.data.sorting;                                
             } catch (err) {

@@ -192,7 +192,7 @@ onMounted(() => {
 
           <!-- Load More -->
           <div v-if="submissionLogStore.paginationInfo.current_page < submissionLogStore.paginationInfo.last_page">
-              <p @click="" class=" cursor-pointer text-center w-full font-bold underline ">Load More ...</p>
+              <p @click="submissionLogStore.fetchSubmissionLogs(props.id ?? '', submissionLogStore.paginationInfo.current_page + 1 )" class=" cursor-pointer text-center w-full font-bold underline ">Load More ...</p>
           </div>
 
           <!-- Logs -->
