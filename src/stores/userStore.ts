@@ -28,7 +28,7 @@ export const useUserStore = defineStore('user-store', {
 
                 localStorage.setItem("auth_token", response.data.token);
                 localStorage.setItem("user", JSON.stringify(response.data.user));
-                console.log(response.data);
+                
                 this.user = response.data.user;
                 this.isAuthenticated = true;
 
@@ -48,7 +48,7 @@ export const useUserStore = defineStore('user-store', {
                 localStorage.removeItem("auth_token");
                 this.user = null;
                 this.isAuthenticated = false;
-                console.log(data);
+                
             } catch (err : any) {
                 console.error(err);
                 console.log(err.response?.data?.message || err.message)
