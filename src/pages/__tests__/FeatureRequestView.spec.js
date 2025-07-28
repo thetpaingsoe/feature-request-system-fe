@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import HomeView from '../HomeView.vue'
 import { nextTick } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useFeatureRequestStore } from '@/stores/featureRequestStore'
+import FeatureRequestView from '../FeatureRequestView.vue'
 
 vi.mock('lucide-vue-next', () => ({
   LoaderCircle: { template: '<div>LoaderCircle</div>' },
@@ -75,7 +75,7 @@ describe('Testing Home View', () => {
   })
 
   it('testing render properly', () => {
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia], // Provide the Pinia instance to the mounted component
       },
@@ -85,7 +85,7 @@ describe('Testing Home View', () => {
   })
 
   it('binds input values to the store correctly', async () => {
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia],
       },
@@ -108,7 +108,7 @@ describe('Testing Home View', () => {
     store.validate.mockReturnValue(false); // Force validation to fail
     store.formError.title = 'Title is required'; // Simulate an error being set by the store
 
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia],
       },
@@ -130,7 +130,7 @@ describe('Testing Home View', () => {
     store.submitFeatureRequest.mockResolvedValue({ success: true, data: { id: 1 } });
     store.validate.mockReturnValue(true); // Ensure validation passes
 
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia],
       },
@@ -159,7 +159,7 @@ describe('Testing Home View', () => {
     store.validate.mockReturnValue(true); // Ensure validation passes
     store.formError.server = 'Server error occurred.'; // Simulate server error being set by store
 
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia],
       },
@@ -182,7 +182,7 @@ describe('Testing Home View', () => {
     store.submitFeatureRequest.mockResolvedValue({ success: true, data: { id: 1 } });
     store.validate.mockReturnValue(true);
 
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia],
       },
@@ -204,7 +204,7 @@ describe('Testing Home View', () => {
 
   it('disables the submit button when processing', async () => {
     store.processing = true; // Manually set processing to true
-    const wrapper = mount(HomeView, {
+    const wrapper = mount(FeatureRequestView, {
       global: {
         plugins: [pinia],
       },
