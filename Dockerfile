@@ -17,5 +17,11 @@ RUN npm run build
 
 # Serve stage (optional: can use nginx or just for development)
 FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 COPY --from=builder /app/dist /usr/share/nginx/html
+
+CMD ["nginx", "-g", "daemon off;"]
+
 EXPOSE 5173
