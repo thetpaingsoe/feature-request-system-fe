@@ -121,7 +121,7 @@ onMounted(() => {
         </div>
         
         <!-- Submissions Grids -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div
                 v-for="submission in submissionStore.data"
                 :key="submission.id"
@@ -151,8 +151,8 @@ onMounted(() => {
         </div>
 
         <!-- Load More Submission -->
-        <div v-if="!submissionStore.processing && submissionStore.paginationInfo.current_page < submissionStore.paginationInfo.last_page" 
-            class="flex justify-center w-full mt-8">
+        <div v-if="!submissionStore.processing && submissionStore.paginationInfo.current_page < submissionStore.paginationInfo.last_page"
+            class="flex justify-center w-full mt-8 mb-20">
             <p class="cursor-pointer font-bold text-primary-light hover:text-primary-light/80" @click="fetchSubmissions(submissionStore.paginationInfo.current_page+1)">Load More</p>
         </div>
 
@@ -163,6 +163,8 @@ onMounted(() => {
         <div v-else-if="submissionStore.processing && submissionStore.data.length === 0" class="text-center text-gray-600 dark:text-gray-400 mt-12">
             Loading ...
         </div>
+
+        <div class="h-20" />
           
     </DashboardLayout>
 
