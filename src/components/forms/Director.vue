@@ -96,6 +96,10 @@ onMounted(() => {
   
   if (directors.value.length === 0) {
     addDirector(); // Add an initial director if none exist
+  }else {
+    for(var i=0; i< directors.value.length; i++) {
+      directors.value[i].id = i
+    }
   }
 });
 

@@ -99,7 +99,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
             try {
                 const response = await api.get('/api/submissions/'  + id);
                 this.getData.data = response.data;
-                console.log(response.data);
+                
             } catch (err: any) {
                 console.log(err.response?.data?.message || err.message)
                 this.getData.error = err.response?.data?.message || err.message                

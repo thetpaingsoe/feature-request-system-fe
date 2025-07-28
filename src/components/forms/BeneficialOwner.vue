@@ -98,6 +98,10 @@ onMounted(() => {
   console.log(beneficial_owners);
   if (beneficial_owners.value.length === 0) {
     addBeneficialOwner(); // Add an initial beneficialOwner if none exist
+  }else {
+    for(var i=0; i< beneficial_owners.value.length; i++) {
+      beneficial_owners.value[i].id = i
+    }
   }
 });
 

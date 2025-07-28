@@ -124,6 +124,10 @@ onMounted(() => {
   console.log(shareholders);
   if (shareholders.value.length === 0) {
     addShareholder(); // Add an initial shareholder if none exist
+  }else {
+    for(var i=0; i< shareholders.value.length; i++) {
+      shareholders.value[i].id = i
+    }
   }
 });
 

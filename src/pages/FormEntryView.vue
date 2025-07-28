@@ -92,7 +92,7 @@ watch(currentSection, (newVal) => {
   }
 });
 
-watch(submissionStore.formData, (newVal) => {
+watch(() => submissionStore.formData, (newVal) => {
   if(!props.id){
     localStorage.setItem('formData', JSON.stringify(newVal))
   }
