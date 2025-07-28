@@ -316,6 +316,14 @@ function validate() {
     status = false
   }
 
+  if(!issuedSharesValidationRule.validate(modelValue.value.number_of_issued_shares)) {
+    issuedSharesValidateionState.value = {
+      status: true,
+      message: '',
+    }
+    status = false
+  }
+
   if (!modelValue.value.share_value_id) {
     
     valuePerSharesValidateionState.value = {

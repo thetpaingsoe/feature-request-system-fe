@@ -104,7 +104,7 @@ function validate() {
     }
 
     // Percent
-    const isPercentValid = getEmailValidationRule.validate(shareholder.email);
+    const isPercentValid = getPercentValidationRule.validate(shareholder.percentage);
     if (!isPercentValid) {
       percentValidationStates[shareholder.id] = {
         status: true,
