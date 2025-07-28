@@ -6,6 +6,7 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { ChevronsUpDownIcon } from 'lucide-vue-next'
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import Button from '@/components/ui/button/Button.vue';
 
 const userRef = ref('');
 const router = useRouter();

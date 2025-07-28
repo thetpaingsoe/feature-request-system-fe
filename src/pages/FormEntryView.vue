@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Actions from '@/components/Actions.vue'
+import Breadcrumbs from '@/components/Breadcrumbs.vue'
 import KDialog from '@/components/common/KDialog.vue'
 import FormHeader from '@/components/FormHeader.vue'
 import SectionForm from '@/components/SectionForm.vue'
@@ -102,11 +103,13 @@ async function handleSubmit() {
     if(props.id) {
       const data = await submissionStore.putSubmission(props.id);
       console.log(data);
-      submissionStore.showDialog(
-        "Successfully Update!",
-        "Your submission has been successfully updated.",
-        redirectDashboard
-      );
+      if(data != null) {
+        submissionStore.showDialog(
+          "Successfully Update!",
+          "Your submission has been successfully updated.",
+          redirectDashboard
+        );
+      }
     }else {
       // create
       const data = await submissionStore.postSubmission();
@@ -136,27 +139,47 @@ function handleSave() {
     router.push({ name: "dashboard" });
   }
 }
+
+const breadcrumbs: any[] = [
+    {
+        title: 'Dashboard',
+        name: 'dashboard',
+        options : {}
+    },
+    {
+        title: 'Detail',
+        name: 'submission',
+        options : { id : props.id }
+    },
+    {
+        title: 'Edit',
+        name: '/',
+        options : {}
+    },
+];
+
 </script>
 
 <template>
   <DashboardLayout>
   <!-- <main class="flex flex-col bg-background"> -->
+    <Breadcrumbs :breadcrumbs="breadcrumbs" class="text-white mt-8"/>
     <!-- Form Header -->
     <FormHeader />
 
-    <!-- Section Navigation -->
-    <SectionNavigation
-      :sections="sections"
-      :current-section="currentSection"
-      @navigate="handleSectionChange"
-    />
-
     <!-- Form Detail Screen -->
-    <div v-if="submissionStore.getData.isLoading" class="w-full mt-8 text-white justify-center items-center flex">
-      <LoaderCircle class="me-2 animate-spin" />
+    <div v-if="submissionStore.getData.isLoading" class="w-full mt-8 text-white text-center ">
       Loading...
     </div>
     <div v-else>
+
+      <!-- Section Navigation -->
+      <SectionNavigation
+        :sections="sections"
+        :current-section="currentSection"
+        @navigate="handleSectionChange"
+      />
+      
       <SectionForm  :current-section="currentSection" v-model="submissionStore.formData" ref="sectionFormRef" />
 
       <!-- Actions -->
