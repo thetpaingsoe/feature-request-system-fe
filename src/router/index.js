@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/pages/HomeView.vue'
 import LoginView from '@/pages/LoginView.vue'
-import FormEntryView from '@/pages/FormEntryView.vue'
 import DashboardView from '@/pages/DashboardView.vue'
 import SubmissionDetail from '@/pages/SubmissionDetail.vue'
+import SubmissionEntryView from '@/pages/SubmissionEntryView.vue'
+import FeatureRequestView from '@/pages/FeatureRequestView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/entry/:id?',
       name: 'entry',
-      component: FormEntryView,
+      component: SubmissionEntryView,
       props: true,
       meta: { requiresAuth: true },
     },
@@ -34,9 +34,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/home',
-      name: 'home',
-      component: HomeView,
+      path: '/feature-request',
+      name: 'feature-request',
+      component: FeatureRequestView,
       meta: { requiresAuth: true },
     },
   ],

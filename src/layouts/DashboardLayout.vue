@@ -16,7 +16,6 @@ onMounted(() => {
         userRef.value = user.name;
     }
 });
-
 </script>
 
 <template>
@@ -26,21 +25,21 @@ onMounted(() => {
                 <h1 class="text-white text-lg cursor-pointer" @click="router.push({name: 'dashboard'})">Home</h1>
                 
                 <DropdownMenu>
-                        <DropdownMenuTrigger :as-child="true">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                class="relative text-white hover:bg-transparent hover:text-primary-light size-10 w-auto rounded-full p-1 focus-within:ring-primary "
-                            >
+                    <DropdownMenuTrigger :as-child="true">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            class="relative text-white hover:bg-transparent hover:text-primary-light size-10 w-auto rounded-full p-1 focus-within:ring-primary "
+                        >
                             <div class="flex justify-center items-center">
                                 {{ userRef }} <ChevronsUpDownIcon class="size-5 ms-2" />                            
                             </div>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" class="w-56 bg-primary border-primary-light hover:bg-none">
-                            <UserMenuContent />
-                        </DropdownMenuContent>
-                    </DropdownMenu>                    
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" class="w-56 bg-primary border-primary-light hover:bg-none">
+                        <UserMenuContent />
+                    </DropdownMenuContent>
+                </DropdownMenu>                    
             </div>
         </template>
 

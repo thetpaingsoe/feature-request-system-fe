@@ -6,7 +6,7 @@ import KMultiSelectDropdown from '@/components/common/KMultiSelectDropdown.vue'
 import KNumberInput from '@/components/common/KNumberInput.vue'
 import KRadio from '@/components/common/KRadio.vue'
 import KInput from '@/components/common/KInput.vue'
-import type { DropdownOptionType, Submission } from '@/types/SubmissionTypes';
+import type { Submission } from '@/types/SubmissionTypes';
 import { useCountryStore } from '@/stores/countryStore'
 import { useCompanyDesignationStore } from '@/stores/companyDesignationStore'
 import { userShareValueStore } from '@/stores/shareValuesStore'
@@ -22,10 +22,11 @@ const designationStore = useCompanyDesignationStore();
 const shaerValueStore = userShareValueStore();
 
 onMounted(() => {
-  countryStore.fetch();
-  designationStore.fetch();
-  shaerValueStore.fetch();
+    countryStore.fetch();
+    designationStore.fetch();
+    shaerValueStore.fetch();
 });
+
 // Full Name
 const fullNameValidateionState = ref({})
 const fullNameValidationRule = {
@@ -141,17 +142,17 @@ const targetCountryValidation = {
 // Number of shares
 const numOfSharesValidateionState = ref({})
 const numOfSharesValidationRule = {
-  validate: (value : number) => {
-    if (!value) {
-      return false // Empty or whitespace only
-    }
-    if (value < 1) {
-      return false // Specific disallowed name
-    }
+    validate: (value : number) => {
+        if (!value) {
+            return false // Empty or whitespace only
+        }
+        if (value < 1) {
+            return false // Specific disallowed name
+        }
 
-    return true
-  },
-  message: 'Please enter number of shares at least 1 share.',
+        return true
+    },
+    message: 'Please enter number of shares at least 1 share.',
 }
 
 // Are all shares issued?
@@ -176,345 +177,342 @@ const areAllSharedIssuedValidation = {
 // Number of Issued Shares
 const issuedSharesValidateionState = ref({})
 const issuedSharesValidationRule = {
-  validate: (value : number) => {
-    if (!value) {
-      return false // Empty or whitespace only
-    }
-    if (value < 1) {
-      return false // Specific disallowed name
-    }
-    // if (modelValue.value) {
-      if (value > Number(modelValue.value.number_of_shares | 0)) {
-        return false
-      }
-      if (
-        (modelValue.value.are_all_shares_issued != null) &&
-          (modelValue.value.are_all_shares_issued != true) &&
-        value == Number(modelValue.value.number_of_shares | 0)
-      ) {
-        return false
-      }
-    
+    validate: (value : number) => {
+        if (!value) {
+            return false // Empty or whitespace only
+        }
+        if (value < 1) {
+            return false // Specific disallowed name
+        }
+        
+        if (value > Number(modelValue.value.number_of_shares | 0)) {
+            return false
+        }
+        if (
+            (modelValue.value.are_all_shares_issued != null) &&
+            (modelValue.value.are_all_shares_issued != true) &&
+            value == Number(modelValue.value.number_of_shares | 0)
+        ) {
+            return false
+        }
+        
 
-      if (
-        (modelValue.value.are_all_shares_issued != null) &&
-          (modelValue.value.are_all_shares_issued == true) &&
-        value != Number(modelValue.value.number_of_shares | 0)
-      ) {
-        return false
-      }
-    // }else {
-    //   return false
-    // }
-
-    return true
-  },
-  message: 'Please input the valid issued shares.',
+        if (
+            (modelValue.value.are_all_shares_issued != null) &&
+            (modelValue.value.are_all_shares_issued == true) &&
+            value != Number(modelValue.value.number_of_shares | 0)
+        ) {
+            return false
+        }
+        
+        return true
+    },
+    message: 'Please input the valid issued shares.',
 }
 
 // Value Per Shares
 const valuePerSharesValidateionState = ref({})
 const valuePerSharesOptions = computed(() =>
-  shaerValueStore.data.map((shareValue: ShareValue) => {
-    const { id, currency, amount } = shareValue; 
-    return {
-      id: id,
-      value: `${currency} ${amount}`
-    };
-  })
+    shaerValueStore.data.map((shareValue: ShareValue) => {
+        const { id, currency, amount } = shareValue; 
+        return {
+            id: id,
+            value: `${currency} ${amount}`
+        };
+    })
 )
 const valuePerSharesValidationRule = {
-  validate: (value : string) => {
-    return value !== null && value !== ''
-  },
-  message: 'Please select a how much each share is worth.',
+    validate: (value : string) => {
+        return value !== null && value !== ''
+    },
+    message: 'Please select a how much each share is worth.',
 }
 
 function validate() {
   
-  var status = true
-  if (!modelValue.value.full_name) {
-    fullNameValidateionState.value = {
-      status: true,
-      message: '',
+    var status = true
+    if (!modelValue.value.full_name) {
+        fullNameValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.email) {
-    emailValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.email) {
+        emailValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.company_name) {
-    companyNameValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.company_name) {
+        companyNameValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.company_designation_id) {
-    designationValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.company_designation_id) {
+        designationValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.jurisdiction_of_operation_id) {
-    operationCountryValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.jurisdiction_of_operation_id) {
+        operationCountryValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.alternative_company_name) {
-    altCompanyNameValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.alternative_company_name) {
+        altCompanyNameValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.target_jurisdictions) {
-    targetCountryValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.target_jurisdictions) {
+        targetCountryValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.number_of_shares) {
-    numOfSharesValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.number_of_shares) {
+        numOfSharesValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (modelValue.value.are_all_shares_issued != false 
-      && modelValue.value.are_all_shares_issued != true) {
-    
-    areAllSharedIssuedValidateionState.value = {
-      status: true,
-      message: '',
+    if (modelValue.value.are_all_shares_issued != false 
+        && modelValue.value.are_all_shares_issued != true) {
+        
+        areAllSharedIssuedValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.number_of_issued_shares) {
-    
-    issuedSharesValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.number_of_issued_shares) {
+        
+        issuedSharesValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if(!issuedSharesValidationRule.validate(modelValue.value.number_of_issued_shares)) {
-    issuedSharesValidateionState.value = {
-      status: true,
-      message: '',
+    if(!issuedSharesValidationRule.validate(modelValue.value.number_of_issued_shares)) {
+        issuedSharesValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
 
-  if (!modelValue.value.share_value_id) {
-    
-    valuePerSharesValidateionState.value = {
-      status: true,
-      message: '',
+    if (!modelValue.value.share_value_id) {
+        
+        valuePerSharesValidateionState.value = {
+            status: true,
+            message: '',
+        }
+        status = false
     }
-    status = false
-  }
-  // modelValue.value.selectedValuePerShares = modelValue.value.selectedValuePerShares
 
-  return status
+    return status
 }
 
 // Expose it to parent
 defineExpose({ validate })
+
 </script>
 
 <template>
   
-  <div class="mt-8 font-bold text-white">Point of contact</div>
-  <div class="h-0.5 bg-primary-light ms-2"></div>
-  <div class="flex flex-row mt-8">
-    <div class="text-gray-300 basis-2/6 ms-4 text-sm">
-      This is the individual that we will communicate with. Communications related to this form but
-      also to the company once incorporated will be sent to the same email address. You can change
-      it later on if required.
+    <!-- Point Of Contact -->
+    <div class="mt-8 font-bold text-white">Point of contact</div>
+    <div class="h-0.5 bg-primary-light ms-2"></div>
+    <div class="flex flex-row mt-8">
+            <div class="text-gray-300 basis-2/6 ms-4 text-sm">
+                This is the individual that we will communicate with. Communications related to this form but
+                also to the company once incorporated will be sent to the same email address. You can change
+                it later on if required.
+            </div>
+            <div class="flex flex-col basis-4/7 ms-12 text-white">
+                <KInput
+                    id="full-name"
+                    label="Full Name"
+                    type="text"
+                    placeholder="Enter full name"
+                    v-model="modelValue.full_name"
+                    :validation-rule="fullNameValidationRule"
+                    :validation-state="fullNameValidateionState"
+                />
+
+                <KInput
+                    id="email"
+                    label="Email"
+                    type="text"
+                    placeholder="Enter email"
+                    v-model="modelValue.email"
+                    :validation-rule="emailValidationRule"
+                    :validation-state="emailValidateionState"
+                    class="mt-4"
+                />
+            </div>
     </div>
-    <div class="flex flex-col basis-4/7 ms-12 text-white">
-      <KInput
-        id="full-name"
-        label="Full Name"
-        type="text"
-        placeholder="Enter full name"
-        v-model="modelValue.full_name"
-        :validation-rule="fullNameValidationRule"
-        :validation-state="fullNameValidateionState"
-      />
 
-      <KInput
-        id="email"
-        label="Email"
-        type="text"
-        placeholder="Enter email"
-        v-model="modelValue.email"
-        :validation-rule="emailValidationRule"
-        :validation-state="emailValidateionState"
-        class="mt-4"
-      />
+    <!-- Company Information-->
+    <div class="mt-8 font-bold text-white">Company Information</div>
+    <div class="h-0.5 bg-primary-light ms-2"></div>
+    <div class="flex flex-row mt-8">
+        <div class="text-gray-300 basis-2/6 ms-4 text-sm">
+            Every company must have a name and a designation. For the company name you can use both
+            letters and numbers, but not special symbols. For the designations, there is no actual
+            different between one or another.
+        </div>
+        <div class="flex flex-col basis-4/7 ms-12 text-white">
+            <KInput
+                id="company-name"
+                label="Company Name"
+                type="text"
+                placeholder="The name you want your company to have"
+                v-model="modelValue.company_name"
+                :validation-rule="companyNameValidationRule"
+                :validation-state="companyNameValidateionState"
+            />
+
+            <KInput
+                id="alt-company-name"
+                label="Alternative company name"
+                type="text"
+                placeholder="The name to use if the first name is not available"
+                v-model="modelValue.alternative_company_name"
+                :validation-rule="altCompanyNameValidationRule"
+                :validation-state="altCompanyNameValidateionState"
+                class="mt-4"
+            />
+
+            <KDropdown
+                id="company-designation"
+                cid="company-designation"
+                label="Company designation"
+                placeholder="Select the option that you prefer"
+                v-model="modelValue.company_designation_id"
+                :options="designationOptions"
+                :validation-rule="designationValidationRule"
+                :validation-state="designationValidateionState"
+                class="mt-4"
+            />
+        </div>
     </div>
-  </div>
 
-  <!-- Company Information-->
-  <div class="mt-8 font-bold text-white">Company Information</div>
-  <div class="h-0.5 bg-primary-light ms-2"></div>
-  <div class="flex flex-row mt-8">
-    <div class="text-gray-300 basis-2/6 ms-4 text-sm">
-      Every company must have a name and a designation. For the company name you can use both
-      letters and numbers, but not special symbols. For the designations, there is no actual
-      different between one or another.
+    <!-- Countries of interest -->
+    <div class="mt-8 font-bold text-white">Countries of interest</div>
+    <div class="h-0.5 bg-primary-light ms-2"></div>
+    <div class="flex flex-row mt-8">
+        <div class="text-gray-300 basis-2/6 ms-4 text-sm">
+        We are required to check that the company will not be interacting with forbidden locations.
+        For 'jurisdiction of operation' if you are alone, select your country of residency. If you
+        have more shareholders, pick the most relevant. For 'target jurisdiction' select 1-3 countries
+        that are relevant. Even if you will have clients from other counties, it's ok.
+        </div>
+        <div class="flex flex-col basis-4/7 ms-12 text-white">
+            <KDropdown
+                id="operation-country"
+                cid="operation-country"
+                label="Jurisdiction of operation"
+                placeholder="Select the country where you are located"
+                v-model="modelValue.jurisdiction_of_operation_id"
+                :options= "operationCountryOptions"
+                :validation-rule="operationCountryValidationRule"
+                :validation-state="operationCountryValidateionState"
+                class="mt-4"
+            />
+
+            <KMultiSelectDropdown
+                id="target-country"
+                cid="target-country"
+                label="Target Jurisdictions"
+                v-model="modelValue.target_jurisdictions"
+                :options="targetCountryOptions"
+                :validation-rule="targetCountryValidation"
+                :validation-state="targetCountryValidateionState"
+                placeholder="Select the countries where your clients are located"
+                class="mt-4"
+            />
+        </div>
     </div>
-    <div class="flex flex-col basis-4/7 ms-12 text-white">
-      <KInput
-        id="company-name"
-        label="Company Name"
-        type="text"
-        placeholder="The name you want your company to have"
-        v-model="modelValue.company_name"
-        :validation-rule="companyNameValidationRule"
-        :validation-state="companyNameValidateionState"
-      />
 
-      <KInput
-        id="alt-company-name"
-        label="Alternative company name"
-        type="text"
-        placeholder="The name to use if the first name is not available"
-        v-model="modelValue.alternative_company_name"
-        :validation-rule="altCompanyNameValidationRule"
-        :validation-state="altCompanyNameValidateionState"
-        class="mt-4"
-      />
+    <!-- Shares structure -->
+    <div class="mt-8 font-bold text-white">Shares structure</div>
+    <div class="h-0.5 bg-primary-light ms-2"></div>
+    <div class="flex flex-row mt-8">
+        <div class="text-gray-300 basis-2/6 ms-4 text-sm">
+        All companies must have at least 1 share. Apart from that, you can structure things in
+        whatever way you like. Issued shares are shares that will be distributed from day 1. Unissued
+        shares are shares that you can distribute later on, i.e. to future team members or investors.
+        The value per shares represents your personal liabiity. So, if you wish to reduce risks, just
+        pick the smallest number.
+        </div>
+        <div class="flex flex-col basis-4/7 ms-12 text-white">
+            <KNumberInput
+                id="num-of-shares"
+                cid="num-of-shares"
+                label="Number of Shares"
+                type="text"
+                placeholder="Select how many shares you wish to have"
+                v-model="modelValue.number_of_shares"
+                :validation-rule="numOfSharesValidationRule"
+                :validation-state="numOfSharesValidateionState"
+                class="mt-4"
+            />
 
-      <KDropdown
-        id="company-designation"
-        cid="company-designation"
-        label="Company designation"
-        placeholder="Select the option that you prefer"
-        v-model="modelValue.company_designation_id"
-        :options="designationOptions"
-        :validation-rule="designationValidationRule"
-        :validation-state="designationValidateionState"
-        class="mt-4"
-      />
-    </div>
-  </div>
+            <KRadio
+                id="are-all-shared-issued"
+                label="Are all shares issued?"
+                v-model="modelValue.are_all_shares_issued"
+                :validation-rule="areAllSharedIssuedValidation"
+                :validation-state="areAllSharedIssuedValidateionState"
+                class="mt-4"
+            />
 
-  <!-- Countries of interest -->
-  <div class="mt-8 font-bold text-white">Countries of interest</div>
-  <div class="h-0.5 bg-primary-light ms-2"></div>
-  <div class="flex flex-row mt-8">
-    <div class="text-gray-300 basis-2/6 ms-4 text-sm">
-      We are required to check that the company will not be interacting with forbidden locations.
-      For 'jurisdiction of operation' if you are alone, select your country of residency. If you
-      have more shareholders, pick the most relevant. For 'target jurisdiction' select 1-3 countries
-      that are relevant. Even if you will have clients from other counties, it's ok.
-    </div>
-    <div class="flex flex-col basis-4/7 ms-12 text-white">
-      <KDropdown
-        id="operation-country"
-        cid="operation-country"
-        label="Jurisdiction of operation"
-        placeholder="Select the country where you are located"
-        v-model="modelValue.jurisdiction_of_operation_id"
-        :options= "operationCountryOptions"
-        :validation-rule="operationCountryValidationRule"
-        :validation-state="operationCountryValidateionState"
-        class="mt-4"
-      />
-      <!-- //"operationCountryOptions" -->
+            <KNumberInput
+                id="issued-shares"
+                cid="issued-shares"
+                label="Number of issued shares"
+                type="text"
+                placeholder="Write how many shares you wish to issue on day 1"
+                v-model="modelValue.number_of_issued_shares"
+                :validation-rule="issuedSharesValidationRule"
+                :validation-state="issuedSharesValidateionState"
+                class="mt-4"
+                v-if="!modelValue.are_all_shares_issued"
+            />
 
-      <KMultiSelectDropdown
-        id="target-country"
-        cid="target-country"
-        label="Target Jurisdictions"
-        v-model="modelValue.target_jurisdictions"
-        :options="targetCountryOptions"
-        :validation-rule="targetCountryValidation"
-        :validation-state="targetCountryValidateionState"
-        placeholder="Select the countries where your clients are located"
-        class="mt-4"
-      />
-    </div>
-  </div>
-
-  <!-- Shares structure -->
-  <div class="mt-8 font-bold text-white">Shares structure</div>
-  <div class="h-0.5 bg-primary-light ms-2"></div>
-  <div class="flex flex-row mt-8">
-    <div class="text-gray-300 basis-2/6 ms-4 text-sm">
-      All companies must have at least 1 share. Apart from that, you can structure things in
-      whatever way you like. Issued shares are shares that will be distributed from day 1. Unissued
-      shares are shares that you can distribute later on, i.e. to future team members or investors.
-      The value per shares represents your personal liabiity. So, if you wish to reduce risks, just
-      pick the smallest number.
-    </div>
-    <div class="flex flex-col basis-4/7 ms-12 text-white">
-      <KNumberInput
-        id="num-of-shares"
-        cid="num-of-shares"
-        label="Number of Shares"
-        type="text"
-        placeholder="Select how many shares you wish to have"
-        v-model="modelValue.number_of_shares"
-        :validation-rule="numOfSharesValidationRule"
-        :validation-state="numOfSharesValidateionState"
-        class="mt-4"
-      />
-
-      <KRadio
-        id="are-all-shared-issued"
-        label="Are all shares issued?"
-        v-model="modelValue.are_all_shares_issued"
-        :validation-rule="areAllSharedIssuedValidation"
-        :validation-state="areAllSharedIssuedValidateionState"
-        class="mt-4"
-      />
-
-      <KNumberInput
-        id="issued-shares"
-        cid="issued-shares"
-        label="Number of issued shares"
-        type="text"
-        placeholder="Write how many shares you wish to issue on day 1"
-        v-model="modelValue.number_of_issued_shares"
-        :validation-rule="issuedSharesValidationRule"
-        :validation-state="issuedSharesValidateionState"
-        class="mt-4"
-        v-if="!modelValue.are_all_shares_issued"
-      />
-
-      <KDropdown
-        id="value-per-shares"
-        cid="value-per-shares"
-        label="Value per shares"
-        placeholder="Write how many shares you wish to issue on day 1"
-        v-model="modelValue.share_value_id"
-        :options="valuePerSharesOptions"
-        :validation-rule="valuePerSharesValidationRule"
-        :validation-state="valuePerSharesValidateionState"
-        class="mt-4"
-      />
-    </div>
+            <KDropdown
+                id="value-per-shares"
+                cid="value-per-shares"
+                label="Value per shares"
+                placeholder="Write how many shares you wish to issue on day 1"
+                v-model="modelValue.share_value_id"
+                :options="valuePerSharesOptions"
+                :validation-rule="valuePerSharesValidationRule"
+                :validation-state="valuePerSharesValidateionState"
+                class="mt-4"
+            />
+        </div>
   </div>
 </template>

@@ -16,8 +16,13 @@ interface Props {
   title: string;
   message: string;
   button: string;
+  cancellable?: boolean;
 }
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  // Highlight Start: Default value for cancellable
+  cancellable: true,
+  // Highlight End
+});
 
 // Use defineModel for two-way binding of the dialog's open state.
 // The parent component can use v-model:open="isDialogOpen"
@@ -36,7 +41,7 @@ const closeModal = () => {
 
 <template>
   <!-- The 'open' prop is bound to the defineModel, allowing two-way control from parent -->
-  <Dialog :open="open" @update:open="open = $event">
+  <Dialog :open="open" :onUpdate:open="props.cancellable ? (val) => open = val : undefined" :modal="true">
     <DialogContent class="sm:max-w-[425px] p-6 rounded-lg shadow-lg bg-gray-900 text-white border-gray-700">
       <form class="space-y-6" @submit.prevent>
         <!-- Dialog Header with Title and Description -->
@@ -51,7 +56,7 @@ const closeModal = () => {
 
         <!-- Dialog Footer with OK Button -->
         <DialogFooter class="flex justify-center gap-2 pt-4">
-          <DialogClose as-child>
+          <!-- <DialogClose as-child> -->
             <Button
               variant="secondary"
               id="dialog-ok-button"
@@ -60,7 +65,7 @@ const closeModal = () => {
             >
               {{ props.button || "OK" }}
             </Button>
-          </DialogClose>
+          <!-- </DialogClose> -->
         </DialogFooter>
       </form>
     </DialogContent>

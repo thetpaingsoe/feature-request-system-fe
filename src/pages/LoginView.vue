@@ -5,33 +5,27 @@ import Button from '@/components/ui/button/Button.vue'
 import { LoaderCircle } from 'lucide-vue-next'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
-
 import KInput from '@/components/common/KInput.vue'
 import { useUserStore } from '@/stores/userStore';
 
 const userStore = useUserStore()
 const router = useRouter();
-const isDialogOpen = ref(false);
-
-const closeModal = () => {    
-    isDialogOpen.value = false;
-};
 
 // Email
 const emailValidateionState = ref({})
 const emailValidationRule = {
-  validate: (value : string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!value.trim()) {
-      return false // Empty or whitespace only
-    }
-    if (!emailRegex.test(value)) {
-      return false // Invalid format
-    }
+    validate: (value : string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (!value.trim()) {
+            return false // Empty or whitespace only
+        }
+        if (!emailRegex.test(value)) {
+            return false // Invalid format
+        }
 
-    return true
-  },
-  message: 'Please enter valid email.',
+        return true
+    },
+    message: 'Please enter valid email.',
 }
 
 // Password
@@ -49,6 +43,22 @@ const passwordValidationRule = {
 
 async function handleLogin() {
 
+    if(!emailValidationRule.validate(userStore.form.email)) {
+        emailValidateionState.value = {
+            status: true,
+            message:'',
+        }
+        return false;
+    }
+
+    if(!passwordValidationRule.validate(userStore.form.password)) {
+        passwordValidateionState.value = {
+            status: true,
+            message:'',
+        }
+        return false;
+    }
+
     const data = await userStore.login();
     if(data != null) {
         router.push({ name: 'dashboard' });
@@ -63,11 +73,9 @@ async function handleLogin() {
                 
             <!-- Header -->
             <h2 class="mt-8 font-bold text-white text-4xl text-center">Login</h2>
-            <!-- <div class="h-0.5 bg-primary-light ms-2"></div> -->
-
+            
             <!-- email -->
-            <div class="grid gap-2 mt-12">
-                
+            <div class="grid gap-2 mt-12">                
                 <KInput
                     id="email"
                     label="Email"
@@ -77,41 +85,37 @@ async function handleLogin() {
                     :highlight="false"  
                     :validation-rule="emailValidationRule"    
                     :validation-state="emailValidateionState"
-                />
-                
+                />                
                 <InputError :message="userStore.formError.email" />
             </div>
 
-                <!-- Password -->
-                <div class="grid gap-2 mt-4">
-                    
-                    <KInput
-                        id="password"
-                        label="Password"
-                        type="password"
-                        placeholder="Enter password"    
-                        v-model="userStore.form.password"       
-                        :highlight="false" 
-                        :validation-rule="passwordValidationRule"
-                        :validation-state="passwordValidateionState"
-                    />
-                    <InputError :message="userStore.formError.password" />
-                </div>
-
-                <InputError
-                    :message="userStore.formError.server"
-                    class="mt-4 h-10 bg-red-100 px-3 content-center rounded font-normal"
+            <!-- Password -->
+            <div class="grid gap-2 mt-4">                
+                <KInput
+                    id="password"
+                    label="Password"
+                    type="password"
+                    placeholder="Enter password"    
+                    v-model="userStore.form.password"       
+                    :highlight="false" 
+                    :validation-rule="passwordValidationRule"
+                    :validation-state="passwordValidateionState"
                 />
-            
-                <!-- Submit Button -->
-                <div class="my-6 flex items-center justify-start mt-8">
-                    <Button class="w-full" :disabled="userStore.processing" @click="handleLogin">
+                <InputError :message="userStore.formError.password" />
+            </div>
+
+            <InputError
+                :message="userStore.formError.server"
+                class="mt-4 h-10 bg-red-100 px-3 content-center rounded font-normal"
+            />
+        
+            <!-- Submit Button -->
+            <div class="my-6 flex items-center justify-start mt-8">
+                <Button class="w-full" :disabled="userStore.processing" @click="handleLogin">
                     <LoaderCircle v-if="userStore.processing" class="h-4 w-4 animate-spin" />
                     SUBMIT
-                    </Button>
-                </div>
-            
+                </Button>
+            </div>            
         </div>
-
     </BaseLayout>
 </template>

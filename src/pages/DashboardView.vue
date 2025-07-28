@@ -5,7 +5,6 @@ import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import { useSubmissionStore } from '@/stores/submissionStore';
 import { FormDataStructure } from '@/types/SubmissionTypes';
 import { ScrollText, ChevronRight } from 'lucide-vue-next';
-
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -26,7 +25,11 @@ function callbackNewSubmission() {
 }
 
 function handleNewSubmission(){
-    submissionStore.showDialog("New Submission!", "Would you like to clear the cache and create new submission ?", callbackNewSubmission, "Start New Entry");
+    if(cacheData.value != '') {
+        submissionStore.showDialog("New Submission!", "Would you like to clear the cache and create new submission ?", callbackNewSubmission, "Start New Entry");
+    }else {
+        handleContinueSubmission();
+    }
 }
 
 function fetchSubmissions(page : number | null = null) {
@@ -111,12 +114,13 @@ onMounted(() => {
             </div>
         </div>
 
-        <!-- Submissions -->
+        <!-- Submissions Title -->
         <div>
             <div class="font-bold text-white">Your submissions </div>
             <div class="h-0.5 ms-2 bg-primary"></div>            
         </div>
         
+        <!-- Submissions Grids -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
             <div
                 v-for="submission in submissionStore.data"
@@ -146,13 +150,18 @@ onMounted(() => {
             </div>
         </div>
 
+        <!-- Load More Submission -->
         <div v-if="!submissionStore.processing && submissionStore.paginationInfo.current_page < submissionStore.paginationInfo.last_page" 
             class="flex justify-center w-full mt-8">
             <p class="cursor-pointer font-bold text-primary-light hover:text-primary-light/80" @click="fetchSubmissions(submissionStore.paginationInfo.current_page+1)">Load More</p>
         </div>
 
-        <div v-if="submissionStore.data.length === 0" class="text-center text-gray-600 dark:text-gray-400 mt-12">
+        <!-- Loading and No Data Messages -->
+        <div v-if="submissionStore.data.length === 0 && !submissionStore.processing" class="text-center text-gray-600 dark:text-gray-400 mt-12">
             No submissions to display.
+        </div>
+        <div v-else-if="submissionStore.processing && submissionStore.data.length === 0" class="text-center text-gray-600 dark:text-gray-400 mt-12">
+            Loading ...
         </div>
           
     </DashboardLayout>

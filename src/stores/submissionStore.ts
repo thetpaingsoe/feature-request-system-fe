@@ -1,6 +1,5 @@
 import api from '@/services/api'
 import { defineStore } from 'pinia'
-import type { Router } from 'vue-router';
 import type { FormDataStructure, Submission, SubmissionPagination} from '@/types/SubmissionTypes';
 
 export const useSubmissionStore = defineStore('submissions-store', {
@@ -29,6 +28,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
             title : '',
             message : '',
             button : "OK",
+            cancellable : true,
             action : () => {}
         },
         reply : {
@@ -40,10 +40,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
         }
     }),
     actions: {        
-        goTo(router: Router, name : string = 'dashboard') {
-            console.log(" ➡ " + name);
-            router.push({ name: name });
-        },
+        
         async fetchSubmissions(page : number | null = null) {
 
             try {
@@ -73,16 +70,16 @@ export const useSubmissionStore = defineStore('submissions-store', {
                 this.processing = false;
             }
         },
-        showDialog(title : string, message : string, action : any = () => {}, button : string = "OK"){
+        showDialog(title : string, message : string, action : any = () => {}, button : string = "OK", cancellable : boolean = true){
             if(this.dialog.open == true) {
-                this.dialog.open = false;
-                console.log(this.dialog.open);
+                this.dialog.open = false;                
             }
             this.dialog.open = true;
             this.dialog.title = title;
             this.dialog.message = message;
             this.dialog.button =button;
             this.dialog.action = action;
+            this.dialog.cancellable = cancellable;
         },
         resetDialog() {
             this.dialog = {
@@ -90,6 +87,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
                 title : '',
                 message : '',
                 button : "OK",
+                cancellable : true,
                 action : () => {}
             }
         },
@@ -112,7 +110,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
             this.processing = true
             try {
                 
-               const response = await api.post('/api/submissions', {
+                const response = await api.post('/api/submissions', {
                     full_name: this.formData.company_detail.full_name,
                     email: this.formData.company_detail.email,
                     company_name: this.formData.company_detail.company_name,
@@ -190,16 +188,15 @@ export const useSubmissionStore = defineStore('submissions-store', {
         async postSubmissionReply(submission_id : string) {
             this.formError.server = ''
             this.processing = true
-            try {
-                
+            try {                
                 const response = await api.post('/api/submissions/reply/' + submission_id, {
                     note : this.reply.note,
                     status : this.reply.status,
                     action : this.reply.action
                 });
-                console.log(response.data);
                 this.reply.note = '';
                 this.reply.status = '';
+                this.reply.action = '';
                 return response.data;
             } catch (err : any) {
                 console.log(err.response?.data?.message || err.message)

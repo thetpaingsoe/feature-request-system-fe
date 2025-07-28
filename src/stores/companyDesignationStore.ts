@@ -1,6 +1,5 @@
 import api from '@/services/api'
 import { defineStore } from 'pinia'
-import type { Router } from 'vue-router';
 import { CompanyDesignation } from '@/types/CompanyDesignationTypes';
 
 export const useCompanyDesignationStore = defineStore('company-designation-store', {
@@ -12,10 +11,6 @@ export const useCompanyDesignationStore = defineStore('company-designation-store
         paginationInfo : Object
     }),
     actions: {        
-        goTo(router: Router, name : string = 'dashboard') {
-            console.log(" ➡ " + name);
-            router.push({ name: name });
-        },
         async fetch() {
             try {
                 const response = await api.get('/api/desinations');
