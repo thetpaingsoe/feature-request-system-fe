@@ -2,7 +2,7 @@
 import KDialog from '@/components/common/KDialog.vue';
 import { useSubmissionLogStore } from '@/stores/submissionLogStore';
 import { useSubmissionStore } from '@/stores/submissionStore';
-import { LoaderCircle, Check } from 'lucide-vue-next';
+import { LoaderCircle, Check, Edit } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
@@ -109,6 +109,13 @@ async function handleReplyNote() {
 
 const col2Ref = ref<HTMLElement | null>(null);
 
+function handleEdit() {
+  router.push({
+        name: 'entry', 
+        params: { id: props.id } 
+    });
+}
+
 onMounted(() => {
     initData();    
 });
@@ -120,11 +127,20 @@ onMounted(() => {
   </div>
 
   <div v-else class="flex flex-col h-full overflow-hidden pt-8 ">
+    <div class="flex items-center justify-between">
     <div class="shrink-0  flex items-center just mb-4">
       <h3 class="text-2xl font-bold text-white">
         Submission: {{ submissionStore.getData.data.company_name }}         
       </h3>      
       <KTag :status="submissionStore.getData.data.status" class="ms-2 mt-1"></KTag>
+    </div>
+
+    <button class=" w-fit px-4 bg-primary text-white rounded py-2 mb-4 flex items-center" 
+      v-if="submissionStore.getData.data.status == 'feedback' 
+        || submissionStore.getData.data.status == 'pending'"
+      @click="handleEdit">        
+        <Edit class="size-4 me-2" /> Edit
+    </button>
     </div>
 
     <div class="flex flex-col md:flex-row gap-6 md:h-[82vh]">

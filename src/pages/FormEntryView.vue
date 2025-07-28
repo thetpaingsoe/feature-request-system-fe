@@ -42,6 +42,10 @@ async function initData() {
       submissionStore.dialog.message = submissionStore.getData.error;
       submissionStore.dialog.action = handleItemLoadError;
     }
+
+    if(submissionStore.getData.data.status != 'pending' && submissionStore.getData.data.status != 'feedback') {
+      submissionStore.showDialog("Not Allowed!", "Your submission in the processing, you can't edit now.", handleItemLoadError);
+    }
   }
 }
 
