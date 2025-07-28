@@ -11,7 +11,7 @@ import Button from '@/components/ui/button/Button.vue';
 const userRef = ref('');
 const router = useRouter();
 onMounted(() => {
-    const user = JSON.parse(localStorage.getItem("user") || '');
+    const user = JSON.parse(localStorage.getItem("user") || '{}');
     if(user) {
         userRef.value = user.name;
     }

@@ -1,7 +1,7 @@
 import api from '@/services/api'
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router';
-import type { FormDataStructure, Submission } from '@/types/SubmissionTypes';
+import type { FormDataStructure, Submission, SubmissionPagination} from '@/types/SubmissionTypes';
 
 export const useSubmissionStore = defineStore('submissions-store', {
     state: () => ({
@@ -9,7 +9,7 @@ export const useSubmissionStore = defineStore('submissions-store', {
         data: [] as Array<Submission>, // This is for List
         filters : Object,
         sorting : Object,
-        paginationInfo : Object,
+        paginationInfo : {} as SubmissionPagination,
         formError: {
             server: '',
         },
@@ -44,15 +44,33 @@ export const useSubmissionStore = defineStore('submissions-store', {
             console.log(" ➡ " + name);
             router.push({ name: name });
         },
-        async fetchSubmissions() {
+        async fetchSubmissions(page : number | null = null) {
+
             try {
-                const response = await api.get('/api/submissions');
+                this.processing = true;
+                var param = {};
+                if(page) {
+                    param = {
+                        page : page
+                    };
+                }
+                const response = await api.get('/api/submissions', {
+                    params : param
+                });
                 this.paginationInfo = response.data.submissionsPagination;
-                this.data = response.data.submissionsPagination.data;
+                if(page) {
+                    const tmp = response.data.submissionsPagination.data;
+                    this.data = [...this.data, ...tmp];                    
+                }else {
+                    this.data = response.data.submissionsPagination.data;
+                }
+
                 this.filters = response.data.filters;
                 this.sorting = response.data.sorting;                
             } catch (err) {
                 console.log(err);
+            } finally {
+                this.processing = false;
             }
         },
         showDialog(title : string, message : string, action : any = () => {}, button : string = "OK"){

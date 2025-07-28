@@ -22,6 +22,7 @@ const router = useRouter();
 const submissionStore = useSubmissionStore();
 
 const sectionFormRef = ref()
+const breadcrumbs = ref<any[]>([]);
 
 function handleItemLoadError() {
   submissionStore.resetDialog();
@@ -52,6 +53,24 @@ async function initData() {
 
 onMounted(() => {
   if (props.id) {
+    breadcrumbs.value = [
+        {
+            title: 'Dashboard',
+            name: 'dashboard',
+            options : {}
+        },
+        {
+            title: 'Detail',
+            name: 'submission',
+            options : { id : props.id }
+        },
+        {
+            title: 'Edit',
+            name: '/',
+            options : {}
+        },
+    ];
+
     currentSection.value = 0;
     initData();
     
@@ -140,23 +159,6 @@ function handleSave() {
   }
 }
 
-const breadcrumbs: any[] = [
-    {
-        title: 'Dashboard',
-        name: 'dashboard',
-        options : {}
-    },
-    {
-        title: 'Detail',
-        name: 'submission',
-        options : { id : props.id }
-    },
-    {
-        title: 'Edit',
-        name: '/',
-        options : {}
-    },
-];
 
 </script>
 

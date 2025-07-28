@@ -1,6 +1,7 @@
 import { CompanyDesignation } from "./CompanyDesignationTypes";
 import { Country } from "./CountryTypes";
 import { ShareValue } from "./ShareValueTypes";
+import { InertiaPaginationLink } from "./SubmissionLogTypes";
 
 export interface DropdownOptionType {
     id: string | null | number;
@@ -67,4 +68,15 @@ export interface FormDataStructure {
   beneficial_owners: any;
   directors: any;
   
+}
+
+export interface SubmissionPagination {
+  data: Submission[];
+  current_page: number;
+  last_page: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+  links: InertiaPaginationLink[];
+  total: number;
+  per_page: number;
 }
