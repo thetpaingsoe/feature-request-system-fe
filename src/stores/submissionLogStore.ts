@@ -51,22 +51,6 @@ export const useSubmissionLogStore = defineStore('submission-logs-store', {
                 console.log(err);
             }
         },
-        async postSubmissionLog(submission_id : string, note : string) {
-            this.formError.server = ''
-            this.processing = true
-            try {
-                
-               const response = await api.post('/api/submission-logs/' + submission_id + "/reply", {
-                    note : note
-                });
-                console.log(response.data);
-                return response.data;
-            } catch (err : any) {
-                console.log(err.response?.data?.message || err.message)
-                this.formError.server = err.response?.data?.message || err.message
-            } finally {
-                this.processing = false
-            }
-        },
+        
   }
 });

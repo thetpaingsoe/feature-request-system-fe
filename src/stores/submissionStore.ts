@@ -30,6 +30,13 @@ export const useSubmissionStore = defineStore('submissions-store', {
             message : '',
             button : "OK",
             action : () => {}
+        },
+        reply : {
+            note : '',
+            noteError : '',
+            status : '',
+            action : '',
+            isProcessing : false
         }
     }),
     actions: {        
@@ -142,6 +149,46 @@ export const useSubmissionStore = defineStore('submissions-store', {
             } finally {
                 this.processing = false
             }
-        }
+        },
+        async submissionReply(submission_id:string) {
+            this.reply.status = "";
+            this.reply.action = "";
+            await this.postSubmissionReply(submission_id);
+        },
+        async submissionAccept(submission_id:string) {
+            this.reply.status = "reviewing";
+            this.reply.action = "accept";
+            this.reply.note = "";
+            await this.postSubmissionReply(submission_id);
+            this.getData.data.status = "reviewing";
+        },
+        async submissionReject(submission_id:string) {
+            this.reply.status = "reviewing";
+            this.reply.action = "reject";
+            this.reply.note = "";
+            await this.postSubmissionReply(submission_id);
+            this.getData.data.status = "reviewing";
+        },
+        async postSubmissionReply(submission_id : string) {
+            this.formError.server = ''
+            this.processing = true
+            try {
+                
+                const response = await api.post('/api/submissions/reply/' + submission_id, {
+                    note : this.reply.note,
+                    status : this.reply.status,
+                    action : this.reply.action
+                });
+                console.log(response.data);
+                this.reply.note = '';
+                this.reply.status = '';
+                return response.data;
+            } catch (err : any) {
+                console.log(err.response?.data?.message || err.message)
+                this.formError.server = err.response?.data?.message || err.message
+            } finally {
+                this.processing = false
+            }
+        },
   }
 });

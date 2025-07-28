@@ -24,10 +24,6 @@ const submissionStore = useSubmissionStore()
 const submissionLogStore = useSubmissionLogStore()
 const router = useRouter();
 
-const currentNote = ref();
-const currentNoteError= ref();
-const processing = ref(false);
-
 const isReply = ref(false);
 
 function handleItemLoadError() {
@@ -57,18 +53,34 @@ async function initData() {
   }
 }
 
-function callbackForReject() {
-  console.log("it accept!");
+async function callbackForReject() {
+  if(props.id) {
+    await submissionStore.submissionReject(props.id);
+    submissionLogStore.fetchSubmissionLogs(props.id);    
+    setTimeout(function() {
+      if (col2Ref.value) {
+        col2Ref.value.scrollTop = col2Ref.value.scrollHeight;      
+      }
+    }, 300);
+  }
 }
 function handleReject() {
   submissionStore.showDialog("Would you like to reject ?", 
   "After you reject the feedback, you will not able to update the submission data again.", 
-  callbackForAccept, 
+  callbackForReject, 
   "Continue");
 }
 
-function callbackForAccept() {
-  console.log("it accept!");
+async function callbackForAccept() {
+  if(props.id) {
+    await submissionStore.submissionAccept(props.id);    
+    submissionLogStore.fetchSubmissionLogs(props.id);    
+    setTimeout(function() {
+      if (col2Ref.value) {
+        col2Ref.value.scrollTop = col2Ref.value.scrollHeight;      
+      }
+    }, 300);
+  }
 }
 function handleAccept() {
   submissionStore.showDialog("Would you like to accept ?", 
@@ -88,12 +100,10 @@ function handleReply() {
 async function handleReplyNote() {
   if(props.id) {
     
-    await submissionLogStore.postSubmissionLog(props.id, currentNote.value);
+    await submissionStore.submissionReply(props.id);
     isReply.value = !isReply.value;
-    currentNote.value = '';
     
-    submissionLogStore.fetchSubmissionLogs(props.id);
-    // need to refresh!
+    submissionLogStore.fetchSubmissionLogs(props.id);    
   }
 }
 
@@ -227,16 +237,16 @@ onMounted(() => {
                     
               <TextArea
                   id="note"   
-                  v-model="currentNote"                                     
+                  v-model="submissionStore.reply.note"
                   placeholder="Please write here ..."
                   class="w-full p-2 h-[200px] bg-transparent 
                   border-1 border-primary-light/55
                   focus-visible:border-primary-light"                      
               />
-              <InputError :message="currentNoteError" />
+              <InputError :message="submissionStore.reply.noteError" />
               
-              <button class=" w-full mt-4 bg-primary text-white rounded py-2 mb-4" tabindex="5" :disabled="processing" @click="handleReplyNote">
-                  <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" /> 
+              <button class=" w-full mt-4 bg-primary text-white rounded py-2 mb-4" tabindex="5" :disabled="submissionStore.reply.isProcessing" @click="handleReplyNote">
+                  <LoaderCircle v-if="submissionStore.reply.isProcessing" class="h-4 w-4 animate-spin" /> 
                   Reply Message
               </button>
             </div>
