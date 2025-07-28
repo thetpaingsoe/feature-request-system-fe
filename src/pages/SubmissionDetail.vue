@@ -34,6 +34,7 @@ function handleItemLoadError() {
 
 async function initData() {
     if(props.id) {
+        submissionLogStore.data = [];
         await submissionStore.fetchSubmission(props.id );
         
         submissionLogStore.fetchSubmissionLogs(props.id);
@@ -49,7 +50,7 @@ async function initData() {
             if (col2Ref.value) {
                 col2Ref.value.scrollTop = col2Ref.value.scrollHeight;      
             }
-        }, 500);
+        }, 700);
         
     }
 }
@@ -244,7 +245,7 @@ const breadcrumbs: any[] = [
                             </div>
                             
                             <!-- Feedback Status Reply ( Accept, Reject and Reply ) -->
-                            <div class="flex flex-col items-right justify-right mx-2 mb-8" v-if="submissionStore.getData.data.status == 'feedback'">
+                            <div class="flex flex-col items-right justify-right mx-2 mb-8" v-if="submissionLogStore.data.length > 0 && submissionStore.getData.data.status == 'feedback'">
                                 <Label for="note" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 mt-2"> Do you accept the feedback ? </Label>
                                 <div class="flex justify-start">
 
