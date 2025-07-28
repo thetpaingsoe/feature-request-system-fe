@@ -43,11 +43,20 @@ export const useUserStore = defineStore('user-store', {
         },
 
         async logout() {
-            const data = await api.post('/api/logout');
-            localStorage.setItem("auth_token", '');
-            this.user = null;
-            this.isAuthenticated = false;
-            console.log(data);
+            try {
+                const data = await api.post('/api/logout');
+                localStorage.removeItem("auth_token");
+                this.user = null;
+                this.isAuthenticated = false;
+                console.log(data);
+            } catch (err : any) {
+                console.error(err);
+                console.log(err.response?.data?.message || err.message)
+                this.formError.server = err.response?.data?.message || err.message
+            } finally {
+                this.processing = false;
+                localStorage.removeItem("auth_token");
+            }
         },
 
         async fetchUser() {
